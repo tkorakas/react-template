@@ -140,7 +140,7 @@ The template includes example implementations of:
        -- [ ] Google login
       -- [ ] GitHub login
 - [ ] Advanced features
-      -- [ ] LLM instructions
+      -- [ ] LLM instructions https://zod.dev/llms.txt https://chakra-ui.com/llms.txt
       -- [ ] Advanced Chakra UI integration
       -- [ ] Wire UI components with RHF
       -- [ ] User settings

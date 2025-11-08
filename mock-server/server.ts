@@ -1,7 +1,10 @@
+import cookieParser from 'cookie-parser';
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { z } from 'zod';
+import { authRouter, requireAuth } from './auth-routes.js';
 import { DatabaseManager } from './database';
 import { PaginationQuerySchema, SchemaRegistry } from './schemas';
 
@@ -11,7 +14,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(cookieParser());
+app.use(
+  session({
+    secret: 'your-secret-key-change-this-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  })
+);
+
 app.use(express.json());
+
+app.use('/api/auth', authRouter);
 
 const dbPath = path.join(__dirname, 'data');
 const db = new DatabaseManager(dbPath);
@@ -40,27 +59,33 @@ const validateResource = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-app.get('/api/:resource', validateResource, (req: Request, res: Response) => {
-  try {
-    const { resource } = req.params;
+app.get(
+  '/api/:resource',
+  requireAuth,
+  validateResource,
+  (req: Request, res: Response) => {
+    try {
+      const { resource } = req.params;
 
-    const paginationResult = PaginationQuerySchema.safeParse(req.query);
-    if (!paginationResult.success) {
-      return handleValidationError(paginationResult.error, res);
+      const paginationResult = PaginationQuerySchema.safeParse(req.query);
+      if (!paginationResult.success) {
+        return handleValidationError(paginationResult.error, res);
+      }
+
+      const { page, limit } = paginationResult.data;
+      const result = db.getAll(resource, page, limit);
+
+      res.json(result);
+    } catch (error) {
+      console.error('Error in GET /api/:resource:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    const { page, limit } = paginationResult.data;
-    const result = db.getAll(resource, page, limit);
-
-    res.json(result);
-  } catch (error) {
-    console.error('Error in GET /api/:resource:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-});
+);
 
 app.get(
   '/api/:resource/:id',
+  requireAuth,
   validateResource,
   (req: Request, res: Response) => {
     try {
@@ -87,33 +112,39 @@ app.get(
   }
 );
 
-app.post('/api/:resource', validateResource, (req: Request, res: Response) => {
-  try {
-    const { resource } = req.params;
+app.post(
+  '/api/:resource',
+  requireAuth,
+  validateResource,
+  (req: Request, res: Response) => {
+    try {
+      const { resource } = req.params;
 
-    const resourceSchemas = (SchemaRegistry as any)[resource];
-    if (!resourceSchemas || !resourceSchemas.create) {
-      return res.status(400).json({
-        error: `No schema defined for resource '${resource}'`,
-      });
+      const resourceSchemas = (SchemaRegistry as any)[resource];
+      if (!resourceSchemas || !resourceSchemas.create) {
+        return res.status(400).json({
+          error: `No schema defined for resource '${resource}'`,
+        });
+      }
+
+      const validationResult = resourceSchemas.create.safeParse(req.body);
+      if (!validationResult.success) {
+        return handleValidationError(validationResult.error, res);
+      }
+
+      const newItem = db.create(resource, validationResult.data);
+
+      res.status(201).json(newItem);
+    } catch (error) {
+      console.error('Error in POST /api/:resource:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    const validationResult = resourceSchemas.create.safeParse(req.body);
-    if (!validationResult.success) {
-      return handleValidationError(validationResult.error, res);
-    }
-
-    const newItem = db.create(resource, validationResult.data);
-
-    res.status(201).json(newItem);
-  } catch (error) {
-    console.error('Error in POST /api/:resource:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-});
+);
 
 app.put(
   '/api/:resource/:id',
+  requireAuth,
   validateResource,
   (req: Request, res: Response) => {
     try {
@@ -154,6 +185,7 @@ app.put(
 
 app.delete(
   '/api/:resource/:id',
+  requireAuth,
   validateResource,
   (req: Request, res: Response) => {
     try {
