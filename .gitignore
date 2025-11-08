@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Session data
+mock-server/data/sessions.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

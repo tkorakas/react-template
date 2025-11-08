@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import { authRouter, requireAuth } from './auth-routes.js';
 import { DatabaseManager } from './database';
+import { FileSessionStore } from './file-session-store';
 import { PaginationQuerySchema, SchemaRegistry } from './schemas';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +18,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cookieParser());
 app.use(
   session({
+    store: new FileSessionStore(),
     secret: 'your-secret-key-change-this-in-production',
     resave: false,
     saveUninitialized: false,
@@ -30,6 +32,7 @@ app.use(
 
 app.use(express.json());
 
+// Authentication routes (must be before generic /api/:resource routes)
 app.use('/api/auth', authRouter);
 
 const dbPath = path.join(__dirname, 'data');
@@ -59,11 +62,13 @@ const validateResource = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+// Generic resource routes with authentication middleware
 app.get(
   '/api/:resource',
   requireAuth,
   validateResource,
   (req: Request, res: Response) => {
+    return res.status(401).send();
     try {
       const { resource } = req.params;
 

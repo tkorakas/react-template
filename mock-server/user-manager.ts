@@ -114,7 +114,6 @@ export class UserManager {
     this.users[userIndex] = updatedUser;
     await this.saveUsers();
 
-    // Return user without password
     const { password: _password, ...userResponse } = updatedUser;
     return userResponse;
   }

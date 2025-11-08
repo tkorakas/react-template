@@ -1,4 +1,4 @@
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import ky from 'ky';
@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
+import { useAuth } from '~/common/auth';
 import { Button } from '~/ui';
 
 // Form schema
@@ -46,6 +47,8 @@ const fetchTodos = async (): Promise<TodosResponse> => {
 };
 
 function HomePage() {
+  const { user, logout } = useAuth();
+
   // Fetch todos from our mock server
   const { data, isLoading, error } = useQuery({
     queryKey: ['todos'],
@@ -64,8 +67,34 @@ function HomePage() {
     alert(`Form submitted: ${data.name} (${data.email})`);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <Box p={8}>
+      {/* User Header */}
+      <Box mb={6} p={4} bg="gray.50" borderRadius="md">
+        <HStack justify="space-between">
+          <Box>
+            <Text fontSize="lg" fontWeight="semibold">
+              Welcome, {user?.name}!
+            </Text>
+            <Text fontSize="sm" color="gray.600">
+              {user?.email}
+            </Text>
+          </Box>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            size="sm"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </HStack>
+      </Box>
+
       <VStack gap={6} align="start">
         <Heading>Welcome to React Template</Heading>
 
