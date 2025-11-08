@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import ky from 'ky';
@@ -6,6 +6,9 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
+import { Button } from '~/ui';
+
+// Form schema
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.email('Invalid email'),
@@ -13,27 +16,40 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-interface Post {
+// Todo type from our mock server
+interface Todo {
   id: number;
   title: string;
-  body: string;
-  userId: number;
+  description?: string;
+  completed: boolean;
+  priority: 'low' | 'medium' | 'high';
+  dueDate?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const fetchExample = async (): Promise<Post> => {
+interface TodosResponse {
+  data: Todo[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// Fetch todos from our mock server via Vite proxy
+const fetchTodos = async (): Promise<TodosResponse> => {
   try {
-    return await ky
-      .get('https://jsonplaceholder.typicode.com/posts/1')
-      .json<Post>();
+    return await ky.get('/api/todos?page=1&limit=5').json<TodosResponse>();
   } catch {
-    throw new Error('Failed to fetch data');
+    throw new Error('Failed to fetch todos');
   }
 };
 
 function HomePage() {
+  // Fetch todos from our mock server
   const { data, isLoading, error } = useQuery({
-    queryKey: ['example'],
-    queryFn: fetchExample,
+    queryKey: ['todos'],
+    queryFn: fetchTodos,
   });
 
   const {
@@ -65,15 +81,42 @@ function HomePage() {
 
         <Box>
           <Heading size="md" mb={4}>
-            Example API Data:
+            Todos from Mock Server:
           </Heading>
           {isLoading && <Text>Loading...</Text>}
           {error && <Text color="red.500">Error: {error.message}</Text>}
           {data && (
-            <Box p={4} borderWidth={1} borderRadius="md">
-              <Text fontWeight="bold">{data.title}</Text>
-              <Text>{data.body}</Text>
-            </Box>
+            <VStack gap={3} align="start">
+              <Text fontSize="sm" color="gray.600">
+                Showing {data.data.length} of {data.total} todos (Page{' '}
+                {data.page} of {data.totalPages})
+              </Text>
+              {data.data.map(todo => (
+                <Box
+                  key={todo.id}
+                  p={4}
+                  borderWidth={1}
+                  borderRadius="md"
+                  w="full"
+                >
+                  <Text
+                    fontWeight="bold"
+                    color={todo.completed ? 'green.600' : 'gray.700'}
+                  >
+                    {todo.completed ? '✅' : '⏳'} {todo.title}
+                  </Text>
+                  {todo.description && (
+                    <Text fontSize="sm" color="gray.600" mt={1}>
+                      {todo.description}
+                    </Text>
+                  )}
+                  <Text fontSize="xs" color="gray.500" mt={2}>
+                    Priority: {todo.priority} | Due:{' '}
+                    {todo.dueDate || 'No due date'}
+                  </Text>
+                </Box>
+              ))}
+            </VStack>
           )}
         </Box>
 
@@ -118,7 +161,7 @@ function HomePage() {
                 )}
               </Box>
 
-              <Button type="submit" colorScheme="blue">
+              <Button type="submit" variant="primary">
                 Submit
               </Button>
             </VStack>

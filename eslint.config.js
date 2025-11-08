@@ -35,7 +35,11 @@ export default [
       sourceType: 'module',
       parser: tseslint.parser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        project: [
+          './tsconfig.app.json',
+          './tsconfig.node.json',
+          './mock-server/tsconfig.json',
+        ],
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true,

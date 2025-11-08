@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "title": "Complete project setup",
+    "description": "Set up the React TypeScript project with Vite, ESLint, and Prettier",
+    "completed": true,
+    "priority": "high",
+    "dueDate": "2025-11-01",
+    "createdAt": "2025-10-25T10:00:00Z",
+    "updatedAt": "2025-11-01T14:30:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Implement authentication",
+    "description": "Add login and registration functionality with JWT tokens",
+    "completed": false,
+    "priority": "high",
+    "dueDate": "2025-11-15",
+    "createdAt": "2025-11-02T09:15:00Z",
+    "updatedAt": "2025-11-02T09:15:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Design UI components",
+    "description": "Create reusable UI components using Chakra UI",
+    "completed": false,
+    "priority": "medium",
+    "dueDate": "2025-11-20",
+    "createdAt": "2025-11-03T11:30:00Z",
+    "updatedAt": "2025-11-03T11:30:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Write unit tests",
+    "description": "Add comprehensive test coverage for all components and utilities",
+    "completed": false,
+    "priority": "medium",
+    "dueDate": "2025-11-25",
+    "createdAt": "2025-11-04T08:45:00Z",
+    "updatedAt": "2025-11-04T08:45:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Optimize performance",
+    "description": "Profile and optimize the application for better performance",
+    "completed": false,
+    "priority": "low",
+    "dueDate": "2025-12-01",
+    "createdAt": "2025-11-05T16:20:00Z",
+    "updatedAt": "2025-11-05T16:20:00Z"
+  },
+  {
+    "id": 6,
+    "title": "Deploy to production",
+    "description": "Set up CI/CD pipeline and deploy to production environment",
+    "completed": false,
+    "priority": "high",
+    "dueDate": "2025-12-10",
+    "createdAt": "2025-11-06T13:10:00Z",
+    "updatedAt": "2025-11-06T13:10:00Z"
+  },
+  {
+    "id": 7,
+    "title": "Documentation",
+    "description": "Write comprehensive documentation for the project",
+    "completed": false,
+    "priority": "medium",
+    "dueDate": "2025-12-05",
+    "createdAt": "2025-11-07T10:30:00Z",
+    "updatedAt": "2025-11-07T10:30:00Z"
+  },
+  {
+    "id": 8,
+    "title": "Code review",
+    "description": "Conduct thorough code review and refactoring",
+    "completed": false,
+    "priority": "low",
+    "dueDate": "2025-11-30",
+    "createdAt": "2025-11-08T14:15:00Z",
+    "updatedAt": "2025-11-08T14:15:00Z"
+  }
+]

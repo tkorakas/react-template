@@ -1,20 +1,20 @@
-# React Template with Modern Stack
+# React Template
 
 A comprehensive React TypeScript template built with Vite and modern development tools.
 
-## 🚀 Technologies Included
+## Tech stack
 
-- **⚡ Vite** - Next generation frontend tooling
-- **⚛️ React 19** - Latest React with TypeScript support
-- **🎨 Chakra UI** - Modern component library
-- **🧭 React Router** - Declarative routing
-- **🔍 TanStack Query** - Powerful data fetching and caching
-- **📝 React Hook Form** - Performant forms with minimal re-renders
-- **✅ Zod** - TypeScript-first schema validation
-- **🌐 Ky** - Modern HTTP client based on fetch
-- **📦 pnpm** - Fast, disk space efficient package manager
+- ** Vite** - Next generation frontend tooling
+- ** React 19** - Latest React with TypeScript support
+- ** Chakra UI** - Modern component library
+- ** React Router** - Declarative routing
+- ** TanStack Query** - Powerful data fetching and caching
+- ** React Hook Form** - Performant forms with minimal re-renders
+- ** Zod** - TypeScript-first schema validation
+- ** Ky** - Modern HTTP client based on fetch
+- ** pnpm** - Fast, disk space efficient package manager
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -37,111 +37,112 @@ pnpm run build
 pnpm run preview
 ```
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 src/
-├── pages/           # Page components
-│   ├── HomePage.tsx
-│   └── AboutPage.tsx
-├── AppRouter.tsx    # React Router configuration
+├── ui/      # Reusable components
+│   ├── button.tsx
+│   └── index.ts
+├── features/        # Features, usually individual pages
+│   ├── login/
+│   │   ├── index.tsx        # Template
+│   │   └── use-handler.tsx  # View model
+│   └── register/
+│       ├── index.tsx        # Template
+│       └── use-handler.tsx  # View model
+├── router.tsx       # React Router configuration
 ├── system.ts        # Chakra UI theme system
-├── App.tsx          # Main App component
 └── main.tsx         # Entry point
 ```
 
-## 📋 Features Demonstrated
+## Path Aliases
 
-- **Routing**: Multiple pages with React Router
-- **Styling**: Chakra UI components and theming
-- **Data Fetching**: TanStack Query with ky HTTP client
-- **Form Handling**: React Hook Form with Zod validation
-- **Type Safety**: Full TypeScript integration
+The project is configured with path aliases for cleaner imports:
 
-## 🎯 Example Usage
+- `~/` → `src/` directory
+
+**Example usage:**
+
+```typescript
+// Instead of: import { Button } from '../../components/Button'
+import { Button } from '~/components';
+
+// Instead of: import { router } from './router'
+import { router } from '~/router';
+```
+
+## Mock Server
+
+This template includes a mock API server for development purposes:
+
+### Starting the Mock Server
+
+```bash
+# Start the mock server (runs on http://localhost:3001)
+pnpm run mock-server:dev
+```
+
+### Available Endpoints
+
+- `GET /api/todos` - Get todos with pagination
+- `POST /api/todos` - Create a new todo
+- `PUT /api/todos/:id` - Update a todo
+- `DELETE /api/todos/:id` - Delete a todo
+
+The mock server uses an in-memory database and loads initial data from `mock-server/data/todos.json`.
+
+### Frontend Integration
+
+The Vite development server is configured with a proxy that automatically forwards `/api/*` requests to the mock server, eliminating CORS issues:
+
+```typescript
+// This request goes to http://localhost:3001/api/todos
+const response = await api.get('api/todos');
+```
+
+## Development
+
+### Starting Development
+
+1. Start the mock server:
+
+   ```bash
+   pnpm run mock-server:dev
+   ```
+
+2. Start the frontend development server:
+
+   ```bash
+   pnpm run dev
+   ```
+
+3. Open http://localhost:5174 (or the port shown in terminal)
+
+## Features
 
 The template includes example implementations of:
 
-- API data fetching with error handling
+- API data fetching with error handling and schema validation
 - Form validation with real-time feedback
-- Navigation between pages
-- Responsive design with Chakra UI
+- Mock API server with TypeScript and Zod validation
+- Vite proxy configuration for seamless frontend-backend development
 
-## 🧪 Development
+### Implementation Status
 
-### Available Scripts
-
-- `pnpm run dev` - Start development server
-- `pnpm run build` - Build for production
-- `pnpm run preview` - Preview production build
-- `pnpm run lint` - Run ESLint
-
-### VS Code Tasks
-
-The project includes VS Code tasks for:
-- `dev` - Start development server (Ctrl+Shift+P → Tasks: Run Task → dev)
-- `build` - Build project (Ctrl+Shift+P → Tasks: Run Build Task)
-
-## 📚 Learn More
-
-- [Vite Documentation](https://vite.dev/)
-- [React Documentation](https://react.dev/)
-- [Chakra UI Documentation](https://v3.chakra-ui.com/)
-- [React Router Documentation](https://reactrouter.com/)
-- [TanStack Query Documentation](https://tanstack.com/query/latest)
-- [React Hook Form Documentation](https://react-hook-form.com/)
-- [Zod Documentation](https://zod.dev/)
-- [Ky Documentation](https://github.com/sindresorhus/ky)
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [x] Router, forms, Http client, validation, UI library
+- [x] Linting & testing
+- [x] Mock server with Express and TypeScript
+- [x] Vite proxy configuration
+- [ ] Auth flow
+      -- [ ] Email login
+      -- [ ] OTP  
+       -- [ ] Google login
+      -- [ ] GitHub login
+- [ ] Advanced features
+      -- [ ] LLM instructions
+      -- [ ] Advanced Chakra UI integration
+      -- [ ] Wire UI components with RHF
+      -- [ ] User settings
+      -- [ ] Edit/Create modal
+      -- [ ] Table with sorting and filtering
