@@ -11,23 +11,13 @@ export const userResponseSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
-
-// Login response schema
-export const loginResponseSchema = z.object({
-  message: z.string(),
-  user: userResponseSchema,
 });
 
 // Current user response schema
 export const currentUserResponseSchema = z.object({
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string(),
-  }),
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
 });
 
 // Error response schema
@@ -44,6 +34,5 @@ export const errorResponseSchema = z.object({
 });
 
 export type LoginRequest = z.infer<typeof loginRequestSchema>;
-export type LoginResponse = z.infer<typeof loginResponseSchema>;
 export type CurrentUserResponse = z.infer<typeof currentUserResponseSchema>;
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;

@@ -69,10 +69,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       email: user.email,
     };
 
-    res.json({
-      message: 'Login successful',
-      user,
-    });
+    res.json(user);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error, res);
@@ -100,7 +97,7 @@ authRouter.get('/me', (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  res.json({ user: req.session.user });
+  res.json({ ...req.session.user });
 });
 
 export const requireAuth = (req: Request, res: Response, next: Function) => {

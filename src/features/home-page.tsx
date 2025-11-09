@@ -1,12 +1,12 @@
 import { Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import ky from 'ky';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
 import { useAuth } from '~/common/auth';
+import { getTodos } from '~/data-access/api';
 import { Button } from '~/ui';
 
 // Form schema
@@ -17,7 +17,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-// Todo type from our mock server
 interface Todo {
   id: number;
   title: string;
@@ -37,10 +36,9 @@ interface TodosResponse {
   totalPages: number;
 }
 
-// Fetch todos from our mock server via Vite proxy
 const fetchTodos = async (): Promise<TodosResponse> => {
   try {
-    return await ky.get('/api/todos?page=1&limit=5').json<TodosResponse>();
+    return (await getTodos(1, 5)) as TodosResponse;
   } catch {
     throw new Error('Failed to fetch todos');
   }
@@ -49,7 +47,6 @@ const fetchTodos = async (): Promise<TodosResponse> => {
 function HomePage() {
   const { user, logout } = useAuth();
 
-  // Fetch todos from our mock server
   const { data, isLoading, error } = useQuery({
     queryKey: ['todos'],
     queryFn: fetchTodos,
@@ -73,7 +70,6 @@ function HomePage() {
 
   return (
     <Box p={8}>
-      {/* User Header */}
       <Box mb={6} p={4} bg="gray.50" borderRadius="md">
         <HStack justify="space-between">
           <Box>

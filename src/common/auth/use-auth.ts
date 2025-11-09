@@ -7,13 +7,11 @@ const USER_QUERY_KEY = ['user'];
 export function useAuth() {
   const queryClient = useQueryClient();
 
-  const {
-    data: { user } = { user: null },
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: USER_QUERY_KEY,
     queryFn: getCurrentUser,
+    gcTime: Infinity,
+    staleTime: Infinity,
   });
 
   const isAuthenticated = !!user;
@@ -41,7 +39,6 @@ export function useAuth() {
     user,
     isAuthenticated,
     isLoading,
-    isError,
     setUser,
     clearUser,
     logout: logoutUser,

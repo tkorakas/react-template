@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { useAuth } from './use-auth';
 
 export function AuthManager({ children }: PropsWithChildren) {
-  const { isLoading, isError } = useAuth();
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -15,8 +15,7 @@ export function AuthManager({ children }: PropsWithChildren) {
       >
         <VStack gap={4}>
           <Spinner size="xl" color="blue.500" />
-          <Text color="gray.600">Checking authentication...</Text>
-          {isError && <Text color="red.500">Auth error occurred</Text>}
+          <Text color="gray.600">Loading...</Text>
         </VStack>
       </Box>
     );
