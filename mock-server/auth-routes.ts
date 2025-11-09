@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import './session-types.js';
 import { UserManager } from './user-manager.js';
 import { CreateUserSchema, LoginSchema } from './user-schemas.js';
 
@@ -11,9 +12,9 @@ userManager.initialize().catch(console.error);
 const handleValidationError = (error: z.ZodError, res: Response) => {
   return res.status(400).json({
     error: 'Validation failed',
-    details: error.errors.map(err => ({
-      field: err.path.join('.'),
-      message: err.message,
+    details: error.issues.map(issue => ({
+      field: issue.path.join('.'),
+      message: issue.message,
     })),
   });
 };

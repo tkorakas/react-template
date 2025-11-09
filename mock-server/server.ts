@@ -5,9 +5,16 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import { authRouter, requireAuth } from './auth-routes.js';
-import { DatabaseManager } from './database';
+import { DatabaseManager, type BaseEntity } from './database';
 import { FileSessionStore } from './file-session-store';
 import { PaginationQuerySchema, SchemaRegistry } from './schemas';
+
+type ResourceSchema = {
+  create?: z.ZodSchema;
+  update?: z.ZodSchema;
+};
+
+type SchemaRegistryType = Record<string, ResourceSchema>;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,13 +39,12 @@ app.use(
 
 app.use(express.json());
 
-// Authentication routes (must be before generic /api/:resource routes)
 app.use('/api/auth', authRouter);
 
 const dbPath = path.join(__dirname, 'data');
 const db = new DatabaseManager(dbPath);
 
-const handleValidationError = (error: z.ZodError<any>, res: Response) => {
+const handleValidationError = (error: z.ZodError, res: Response) => {
   const errors = error.issues.map(err => ({
     field: err.path.join('.'),
     message: err.message,
@@ -62,7 +68,6 @@ const validateResource = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-// Generic resource routes with authentication middleware
 app.get(
   '/api/:resource',
   requireAuth,
@@ -124,7 +129,7 @@ app.post(
     try {
       const { resource } = req.params;
 
-      const resourceSchemas = (SchemaRegistry as any)[resource];
+      const resourceSchemas = (SchemaRegistry as SchemaRegistryType)[resource];
       if (!resourceSchemas || !resourceSchemas.create) {
         return res.status(400).json({
           error: `No schema defined for resource '${resource}'`,
@@ -136,7 +141,13 @@ app.post(
         return handleValidationError(validationResult.error, res);
       }
 
-      const newItem = db.create(resource, validationResult.data);
+      const newItem = db.create(
+        resource,
+        validationResult.data as Omit<
+          BaseEntity,
+          'id' | 'createdAt' | 'updatedAt'
+        >
+      );
 
       res.status(201).json(newItem);
     } catch (error) {
@@ -159,7 +170,7 @@ app.put(
         return res.status(400).json({ error: 'Invalid ID format' });
       }
 
-      const resourceSchemas = (SchemaRegistry as any)[resource];
+      const resourceSchemas = (SchemaRegistry as SchemaRegistryType)[resource];
       if (!resourceSchemas || !resourceSchemas.update) {
         return res.status(400).json({
           error: `No schema defined for resource '${resource}'`,
@@ -171,7 +182,11 @@ app.put(
         return handleValidationError(validationResult.error, res);
       }
 
-      const updatedItem = db.update(resource, numericId, validationResult.data);
+      const updatedItem = db.update(
+        resource,
+        numericId,
+        validationResult.data as Partial<Omit<BaseEntity, 'id' | 'createdAt'>>
+      );
 
       if (!updatedItem) {
         return res

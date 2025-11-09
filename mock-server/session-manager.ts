@@ -40,7 +40,7 @@ export class SessionManager {
         this.cleanupExpiredSessions();
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
+       
       console.error('Error loading sessions:', error);
       this.sessions = {};
     }
@@ -54,7 +54,7 @@ export class SessionManager {
         'utf8'
       );
     } catch (error) {
-      // eslint-disable-next-line no-console
+       
       console.error('Error saving sessions:', error);
     }
   }

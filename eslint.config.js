@@ -70,17 +70,20 @@ export default [
       ],
 
       // TypeScript specific rules
+      'no-unused-vars': 'off', // Turn off base rule for TypeScript
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
           destructuredArrayIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
         },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
 
       // Import rules
@@ -99,6 +102,24 @@ export default [
       'import/resolver': {
         typescript: {},
       },
+    },
+  },
+  // Mock server specific rules
+  {
+    files: ['mock-server/**/*.{js,ts}'],
+    rules: {
+      'no-console': 'off', // Allow console statements in server code
+      'no-unused-vars': 'off', // Turn off base rule for TypeScript
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true, // Ignore unused rest siblings in destructuring
+        },
+      ],
     },
   },
   prettier, // Must be last to override other configs

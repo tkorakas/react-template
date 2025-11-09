@@ -1,8 +1,24 @@
 import fs from 'fs';
 import path from 'path';
 
+interface BaseEntity {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export type { BaseEntity };
+
 export class DatabaseManager {
-  private data: Map<string, any[]> = new Map();
+  private data: Map<string, BaseEntity[]> = new Map();
   private dataPath: string;
 
   constructor(dataPath: string) {
@@ -40,13 +56,7 @@ export class DatabaseManager {
     resource: string,
     page: number = 1,
     limit: number = 10
-  ): {
-    data: any[];
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  } {
+  ): PaginatedResponse<BaseEntity> {
     const items = this.data.get(resource) || [];
     const total = items.length;
     const totalPages = Math.ceil(total / limit);
@@ -62,17 +72,20 @@ export class DatabaseManager {
     };
   }
 
-  getById(resource: string, id: number): any | null {
+  getById(resource: string, id: number): BaseEntity | null {
     const items = this.data.get(resource) || [];
     return items.find(item => item.id === id) || null;
   }
 
-  create(resource: string, item: any): any {
+  create(
+    resource: string,
+    item: Omit<BaseEntity, 'id' | 'createdAt' | 'updatedAt'>
+  ): BaseEntity {
     const items = this.data.get(resource) || [];
 
     // Generate new ID
     const maxId = items.length > 0 ? Math.max(...items.map(i => i.id)) : 0;
-    const newItem = {
+    const newItem: BaseEntity = {
       ...item,
       id: maxId + 1,
       createdAt: new Date().toISOString(),
@@ -85,13 +98,17 @@ export class DatabaseManager {
     return newItem;
   }
 
-  update(resource: string, id: number, updates: any): any | null {
+  update(
+    resource: string,
+    id: number,
+    updates: Partial<Omit<BaseEntity, 'id' | 'createdAt'>>
+  ): BaseEntity | null {
     const items = this.data.get(resource) || [];
     const index = items.findIndex(item => item.id === id);
 
     if (index === -1) return null;
 
-    const updatedItem = {
+    const updatedItem: BaseEntity = {
       ...items[index],
       ...updates,
       id, // Ensure ID doesn't change
