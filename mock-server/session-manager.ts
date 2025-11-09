@@ -4,6 +4,7 @@ import type { SessionUser } from './user-schemas';
 
 interface SessionData {
   user?: SessionUser;
+  mfaVerified?: boolean;
   createdAt: number;
   expiresAt: number;
 }
@@ -40,7 +41,6 @@ export class SessionManager {
         this.cleanupExpiredSessions();
       }
     } catch (error) {
-       
       console.error('Error loading sessions:', error);
       this.sessions = {};
     }
@@ -54,7 +54,6 @@ export class SessionManager {
         'utf8'
       );
     } catch (error) {
-       
       console.error('Error saving sessions:', error);
     }
   }
@@ -89,42 +88,61 @@ export class SessionManager {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
   }
 
-  createSession(sessionId: string, user: SessionUser): void {
+  createSession(
+    sessionId: string,
+    user: SessionUser,
+    mfaVerified = false
+  ): void {
     const now = Date.now();
     this.sessions[sessionId] = {
       user,
+      mfaVerified,
       createdAt: now,
       expiresAt: now + this.SESSION_DURATION,
     };
     this.saveSessions();
   }
 
-  getSession(sessionId: string): SessionUser | null {
+  getSession(
+    sessionId: string
+  ): { user: SessionUser; mfaVerified?: boolean } | null {
     const session = this.sessions[sessionId];
 
     if (!session) {
       return null;
     }
 
-    // Check if session is expired
     if (session.expiresAt < Date.now()) {
       this.destroySession(sessionId);
       return null;
     }
 
-    return session.user || null;
+    if (!session.user) {
+      return null;
+    }
+
+    return {
+      user: session.user,
+      mfaVerified: session.mfaVerified,
+    };
   }
 
-  updateSession(sessionId: string, user: SessionUser): void {
+  updateSession(
+    sessionId: string,
+    user: SessionUser,
+    mfaVerified?: boolean
+  ): void {
     const session = this.sessions[sessionId];
 
     if (!session || session.expiresAt < Date.now()) {
-      // Create new session if it doesn't exist or is expired
-      this.createSession(sessionId, user);
+      this.createSession(sessionId, user, mfaVerified);
       return;
     }
 
     session.user = user;
+    if (mfaVerified !== undefined) {
+      session.mfaVerified = mfaVerified;
+    }
     this.saveSessions();
   }
 
@@ -146,5 +164,4 @@ export class SessionManager {
   }
 }
 
-// Export singleton instance
 export const sessionManager = new SessionManager();

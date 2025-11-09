@@ -34,7 +34,6 @@ export class UserManager {
   }
 
   async createUser(userData: CreateUser): Promise<UserResponse> {
-    // Check if user already exists
     const existingUser = this.users.find(user => user.email === userData.email);
     if (existingUser) {
       throw new Error('User with this email already exists');
@@ -44,12 +43,14 @@ export class UserManager {
       id: uuidv4(),
       name: userData.name,
       email: userData.email,
-      password: userData.password, // Plain text for mock server
+      password: userData.password,
+      mfaEnabled: false,
     };
 
     this.users.push(user);
     // Note: New users are only stored in memory, not persisted to file
-    // Update users.json manually to persist test users
+    // Update users.json manually to persist test users or uncomment the line below
+    // await this.saveUsers();
 
     const { password: _password, ...userResponse } = user;
     return userResponse;
@@ -91,6 +92,11 @@ export class UserManager {
 
     const { password: _password, ...userResponse } = user;
     return userResponse;
+  }
+
+  async getFullUserByEmail(email: string): Promise<User | null> {
+    const user = this.users.find(u => u.email === email);
+    return user || null;
   }
 
   async getAllUsers(): Promise<UserResponse[]> {

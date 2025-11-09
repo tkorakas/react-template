@@ -1,11 +1,13 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { MfaManager } from './mfa-manager.js';
 import './session-types.js';
 import { UserManager } from './user-manager.js';
 import { CreateUserSchema, LoginSchema } from './user-schemas.js';
 
 const authRouter = Router();
 const userManager = new UserManager();
+const mfaManager = new MfaManager();
 
 userManager.initialize().catch(console.error);
 
@@ -30,6 +32,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
       name: user.name,
       email: user.email,
     };
+    req.session.mfaVerified = true;
 
     res.status(201).json(user);
   } catch (error) {
@@ -58,7 +61,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(400).json({ error: 'Invalid email or password' });
     }
 
     req.session.user = {
@@ -67,6 +70,18 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       email: user.email,
     };
 
+    if (user?.mfaEnabled) {
+      mfaManager.generateOtp(user.id);
+
+      req.session.mfaVerified = false;
+
+      return res.status(409).json({
+        error: 'MFA verification required',
+        requiresMfa: true,
+      });
+    }
+
+    req.session.mfaVerified = true;
     res.json(user);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -78,7 +93,60 @@ authRouter.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-authRouter.post('/logout', (req: Request, res: Response) => {
+const requirePartialAuth = (req: Request, res: Response, next: Function) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  next();
+};
+
+const requireAuth = (req: Request, res: Response, next: Function) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  if (req.session.mfaVerified === false) {
+    return res.status(401).json({ error: 'MFA verification required' });
+  }
+
+  next();
+};
+
+authRouter.post(
+  '/verify-mfa',
+  requirePartialAuth,
+  (req: Request, res: Response) => {
+    try {
+      const { otp } = req.body;
+
+      if (!otp || typeof otp !== 'string') {
+        return res.status(400).json({ error: 'OTP code is required' });
+      }
+
+      if (!req.session.user) {
+        return res.status(401).json({ error: 'Session not found' });
+      }
+
+      const isValidOtp = mfaManager.validateOtp(req.session.user.id, otp);
+
+      if (!isValidOtp) {
+        return res.status(400).json({ error: 'Invalid or expired OTP code' });
+      }
+
+      req.session.mfaVerified = true;
+
+      res.json({
+        message: 'MFA verification successful',
+        user: req.session.user,
+      });
+    } catch (error) {
+      console.error('Error in POST /verify-mfa:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+authRouter.post('/logout', requireAuth, (req: Request, res: Response) => {
   req.session.destroy(err => {
     if (err) {
       console.error('Error destroying session:', err);
@@ -95,14 +163,15 @@ authRouter.get('/me', (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
+  if (req.session.mfaVerified === false) {
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.status(401).json({ error: 'Not authenticated' });
+    });
+    return;
+  }
+
   res.json({ ...req.session.user });
 });
 
-export const requireAuth = (req: Request, res: Response, next: Function) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-  next();
-};
-
-export { authRouter, userManager };
+export { authRouter, requireAuth, userManager };

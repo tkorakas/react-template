@@ -1,3 +1,5 @@
+import { HTTPError } from 'ky';
+import { MfaRequiredError } from '~/common/errors';
 import { httpClient } from '~/common/http-client';
 import type {
   CurrentUserResponse,
@@ -16,12 +18,28 @@ export const register = async (userData: RegisterRequest) => {
 };
 
 export const login = async (credentials: LoginRequest) => {
-  const response = await httpClient.post('auth/login', {
-    json: credentials,
+  try {
+    const response = await httpClient.post('auth/login', {
+      json: credentials,
+    });
+
+    const data = await response.json();
+    return userResponseSchema.parse(data);
+  } catch (error) {
+    if (error instanceof HTTPError && error.response.status === 409) {
+      throw new MfaRequiredError();
+    }
+    throw error;
+  }
+};
+
+export const verifyMfa = async (otp: string) => {
+  const response = await httpClient.post('auth/verify-mfa', {
+    json: { otp },
   });
 
   const data = await response.json();
-  return userResponseSchema.parse(data);
+  return data;
 };
 
 export const getCurrentUser = async (): Promise<CurrentUserResponse> => {

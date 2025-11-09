@@ -4,6 +4,16 @@
     "name": "Test User",
     "email": "test@example.com",
     "password": "password123",
+    "mfaEnabled": false,
+    "createdAt": "2025-11-08T00:00:00Z",
+    "updatedAt": "2025-11-08T00:00:00Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "name": "MFA User",
+    "email": "mfa@example.com",
+    "password": "password123",
+    "mfaEnabled": true,
     "createdAt": "2025-11-08T00:00:00Z",
     "updatedAt": "2025-11-08T00:00:00Z"
   }

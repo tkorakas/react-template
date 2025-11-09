@@ -14,18 +14,19 @@ export class FileSessionStore extends Store {
     ) => void
   ): void {
     try {
-      const user = sessionManager.getSession(sessionId);
+      const sessionData = sessionManager.getSession(sessionId);
 
-      if (user) {
+      if (sessionData) {
         const session = {
-          user,
+          user: sessionData.user,
+          mfaVerified: sessionData.mfaVerified,
           cookie: {
             originalMaxAge: 24 * 60 * 60 * 1000, // 24 hours
             expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
             secure: false,
             httpOnly: true,
             path: '/',
-            sameSite: 'lax',
+            sameSite: 'lax' as const,
           },
         };
         callback(null, session);
@@ -44,7 +45,11 @@ export class FileSessionStore extends Store {
   ): void {
     try {
       if (session.user) {
-        sessionManager.updateSession(sessionId, session.user);
+        sessionManager.updateSession(
+          sessionId,
+          session.user,
+          session.mfaVerified
+        );
       }
       callback?.();
     } catch (error) {

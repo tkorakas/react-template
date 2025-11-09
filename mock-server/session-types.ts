@@ -7,5 +7,6 @@ declare module 'express-session' {
       name: string;
       email: string;
     };
+    mfaVerified?: boolean;
   }
 }
