@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { ulid } from 'ulid';
 import type { CreateUser, User, UserResponse } from './user-schemas.js';
 
 export class UserManager {
@@ -40,11 +40,12 @@ export class UserManager {
     }
 
     const user: User = {
-      id: uuidv4(),
+      id: ulid(),
       name: userData.name,
       email: userData.email,
       password: userData.password,
-      mfaEnabled: false,
+      provider: userData.provider || 'local',
+      mfaEnabled: userData.mfaEnabled || false,
     };
 
     this.users.push(user);
@@ -56,12 +57,51 @@ export class UserManager {
     return userResponse;
   }
 
+  async createOAuthUser(userData: {
+    name: string;
+    email: string;
+    provider: string;
+    externalId: string;
+  }): Promise<UserResponse> {
+    const existingUser = this.users.find(user => user.email === userData.email);
+    if (existingUser && existingUser.provider !== userData.provider) {
+      throw new Error(
+        `User with this email already exists with provider: ${existingUser.provider}`
+      );
+    }
+
+    if (existingUser) {
+      const { password: _password, ...userResponse } = existingUser;
+      return userResponse;
+    }
+
+    const user: User = {
+      id: ulid(),
+      name: userData.name,
+      email: userData.email,
+      provider: userData.provider as 'local' | 'github',
+      mfaEnabled: false,
+    };
+
+    this.users.push(user);
+    // Note: New OAuth users are only stored in memory, not persisted to file
+
+    const { password: _password, ...userResponse } = user;
+    return userResponse;
+  }
+
   async authenticateUser(
     email: string,
     password: string
   ): Promise<UserResponse | null> {
-    const user = this.users.find(u => u.email === email);
+    const user = this.users.find(
+      u => u.email === email && u.provider === 'local'
+    );
     if (!user) {
+      return null;
+    }
+
+    if (!user.password) {
       return null;
     }
 

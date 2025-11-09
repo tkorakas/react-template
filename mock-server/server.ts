@@ -1,13 +1,22 @@
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { z } from 'zod';
-import { authRouter, requireAuth } from './auth-routes.js';
+import {
+  authRouter,
+  initializeOAuthProviders,
+  requireAuth,
+} from './auth-routes.js';
 import { DatabaseManager, type BaseEntity } from './database';
 import { FileSessionStore } from './file-session-store';
 import { PaginationQuerySchema, SchemaRegistry } from './schemas';
+
+dotenv.config();
+
+initializeOAuthProviders();
 
 type ResourceSchema = {
   create?: z.ZodSchema;

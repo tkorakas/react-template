@@ -52,6 +52,21 @@ export const logout = async (): Promise<void> => {
   await httpClient.post('auth/logout');
 };
 
+export const getOAuthAuthUrl = async (provider: string) => {
+  const response = await httpClient.get(`auth/oauth/${provider}/authorize`);
+  const data = await response.json();
+  return data as { authUrl: string };
+};
+
+export const oauthCallback = async (provider: string, code: string) => {
+  const response = await httpClient.post(`auth/oauth/${provider}/callback`, {
+    json: { code },
+  });
+
+  const data = await response.json();
+  return userResponseSchema.parse(data);
+};
+
 export const getTodos = async (page = 1, limit = 5) => {
   return httpClient.get(`todos?page=${page}&limit=${limit}`).json();
 };

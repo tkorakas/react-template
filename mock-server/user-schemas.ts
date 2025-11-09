@@ -1,17 +1,21 @@
 import { z } from 'zod';
 
+export const AuthProviderSchema = z.enum(['local', 'github']);
+
 export const UserSchema = z.object({
-  id: z.uuid(),
+  id: z.string(),
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().optional(),
+  provider: AuthProviderSchema.default('local'),
   mfaEnabled: z.boolean().default(false),
 });
 
 export const CreateUserSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().optional(),
+  provider: AuthProviderSchema.default('local'),
   mfaEnabled: z.boolean().default(false),
 });
 
@@ -20,10 +24,14 @@ export const LoginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+export const OAuthSchema = z.object({
+  code: z.string().min(1, 'Authorization code is required'),
+});
+
 export const UserResponseSchema = UserSchema.omit({ password: true });
 
 export const SessionUserSchema = z.object({
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   email: z.email(),
 });

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCurrentUser, logout } from './api';
+import { getCurrentUser, logout } from '~/data-access/api';
 import type { User } from './types';
 
 export const USER_QUERY_KEY = ['user'];

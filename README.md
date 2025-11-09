@@ -27,6 +27,10 @@ A comprehensive React TypeScript template built with Vite and modern development
 # Install dependencies
 pnpm install
 
+# Setup environment variables
+cp .env.dist .env
+# Edit .env with your actual GitHub OAuth credentials
+
 # Start development server
 pnpm run dev
 
@@ -36,6 +40,31 @@ pnpm run build
 # Preview production build
 pnpm run preview
 ```
+
+### Environment Setup
+
+1. **Copy the environment template:**
+
+   ```bash
+   cp .env.dist .env
+   ```
+
+2. **Create a GitHub OAuth App:**
+   - Go to [GitHub Developer Settings](https://github.com/settings/applications/new)
+   - Create a new OAuth App with these settings:
+     - **Authorization callback URL**: `http://localhost:5173/oauth/github/callback`
+   - Copy the `Client ID` and `Client Secret`
+
+3. **Update your `.env` file:**
+
+   ```env
+   GITHUB_CLIENT_ID=your_actual_github_client_id
+   GITHUB_CLIENT_SECRET=your_actual_github_client_secret
+   ```
+
+4. **For production deployments:**
+   - Update `CLIENT_URL` in `.env` to your domain
+   - Update GitHub OAuth app callback URL to `https://yourdomain.com/oauth/github/callback`
 
 ## Project Structure
 

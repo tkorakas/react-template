@@ -5,6 +5,7 @@ import AboutPage from '~/features/about-page';
 import HomePage from '~/features/home-page';
 import LoginPage from '~/features/login';
 import MfaPage from '~/features/mfa';
+import OAuthCallbackPage from '~/features/oauth/callback';
 import RegisterPage from '~/features/register';
 
 export const router = createBrowserRouter([
@@ -43,5 +44,13 @@ export const router = createBrowserRouter([
   {
     path: '/mfa',
     element: <MfaPage />,
+  },
+  {
+    path: '/oauth/:provider/callback',
+    element: (
+      <PublicRoute>
+        <OAuthCallbackPage />
+      </PublicRoute>
+    ),
   },
 ]);

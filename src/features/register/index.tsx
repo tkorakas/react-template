@@ -1,5 +1,15 @@
-import { Alert, Box, Button, Card, Flex, Input, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Input,
+  Separator,
+  Text,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { OAuthButton } from '~/common/auth';
 import { useRegisterHandler } from './use-handler';
 
 export default function RegisterPage() {
@@ -85,6 +95,24 @@ export default function RegisterPage() {
                 </Button>
               </Flex>
             </form>
+
+            <Box position="relative" textAlign="center" my={6}>
+              <Separator />
+              <Box
+                position="absolute"
+                top="50%"
+                left="50%"
+                transform="translate(-50%, -50%)"
+                bg="white"
+                px={3}
+              >
+                <Text fontSize="sm" color="gray.500">
+                  OR
+                </Text>
+              </Box>
+            </Box>
+
+            <OAuthButton provider="github">Sign in with GitHub</OAuthButton>
           </Card.Body>
           <Card.Footer>
             <Text fontSize="sm" textAlign="center" width="full">

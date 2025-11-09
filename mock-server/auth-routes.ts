@@ -1,6 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { GitHubProvider } from './github-provider.js';
 import { MfaManager } from './mfa-manager.js';
+import { OAuthService } from './oauth-service.js';
 import './session-types.js';
 import { UserManager } from './user-manager.js';
 import { CreateUserSchema, LoginSchema } from './user-schemas.js';
@@ -8,6 +10,11 @@ import { CreateUserSchema, LoginSchema } from './user-schemas.js';
 const authRouter = Router();
 const userManager = new UserManager();
 const mfaManager = new MfaManager();
+const oauthService = new OAuthService();
+
+function initializeOAuthProviders() {
+  oauthService.registerProvider('github', new GitHubProvider());
+}
 
 userManager.initialize().catch(console.error);
 
@@ -146,6 +153,95 @@ authRouter.post(
   }
 );
 
+authRouter.post(
+  '/oauth/:provider/callback',
+  async (req: Request, res: Response) => {
+    try {
+      const { provider } = req.params;
+      const { code } = req.body;
+
+      if (!code || typeof code !== 'string') {
+        return res
+          .status(400)
+          .json({ error: 'Authorization code is required' });
+      }
+
+      if (!provider || typeof provider !== 'string') {
+        return res.status(400).json({ error: 'Provider is required' });
+      }
+
+      const tokenData = await oauthService.getTokenData(
+        provider as 'github',
+        code
+      );
+
+      const userInfo = await oauthService.getUserInfo(
+        provider as 'github',
+        tokenData
+      );
+
+      let user = await userManager.getUserByEmail(userInfo.email);
+
+      if (!user) {
+        user = await userManager.createOAuthUser({
+          email: userInfo.email,
+          name: userInfo.name,
+          provider: provider,
+          externalId: userInfo.id,
+        });
+      } else {
+        const fullUser = await userManager.getFullUserByEmail(userInfo.email);
+        if (fullUser && fullUser.provider !== provider) {
+          return res.status(400).json({
+            error: `Account exists with different provider: ${fullUser.provider}`,
+          });
+        }
+      }
+
+      req.session.user = user;
+      req.session.mfaVerified = true;
+
+      res.json(user);
+    } catch (error) {
+      console.error(
+        `Error in POST /oauth/${req.params.provider}/callback:`,
+        error
+      );
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+authRouter.get('/oauth/:provider/authorize', (req: Request, res: Response) => {
+  try {
+    const { provider } = req.params;
+
+    if (!provider || typeof provider !== 'string') {
+      return res.status(400).json({ error: 'Provider is required' });
+    }
+
+    if (provider === 'github') {
+      const clientId = process.env.GITHUB_CLIENT_ID;
+      const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+      if (!clientId) {
+        return res.status(500).json({ error: 'GitHub OAuth not configured' });
+      }
+
+      const redirectUri = `${clientUrl}/oauth/${provider}/callback`;
+      const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      res.json({ authUrl });
+    } else {
+      res.status(400).json({ error: `Provider ${provider} is not supported` });
+    }
+  } catch (error) {
+    console.error(
+      `Error in GET /oauth/${req.params.provider}/authorize:`,
+      error
+    );
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 authRouter.post('/logout', requireAuth, (req: Request, res: Response) => {
   req.session.destroy(err => {
     if (err) {
@@ -174,4 +270,4 @@ authRouter.get('/me', (req: Request, res: Response) => {
   res.json({ ...req.session.user });
 });
 
-export { authRouter, requireAuth, userManager };
+export { authRouter, initializeOAuthProviders, requireAuth, userManager };
