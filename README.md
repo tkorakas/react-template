@@ -4,15 +4,15 @@ A comprehensive React TypeScript template built with Vite and modern development
 
 ## Tech stack
 
-- ** Vite** - Next generation frontend tooling
-- ** React 19** - Latest React with TypeScript support
-- ** Chakra UI** - Modern component library
-- ** React Router** - Declarative routing
-- ** TanStack Query** - Powerful data fetching and caching
-- ** React Hook Form** - Performant forms with minimal re-renders
-- ** Zod** - TypeScript-first schema validation
-- ** Ky** - Modern HTTP client based on fetch
-- ** pnpm** - Fast, disk space efficient package manager
+- Vite - Next generation frontend tooling
+- React 19 - Latest React with TypeScript support
+- Chakra UI - Modern component library
+- React Router - Declarative routing
+- TanStack Query - Powerful data fetching and caching
+- React Hook Form - Performant forms with minimal re-renders
+- Zod - TypeScript-first schema validation
+- Ky - Modern HTTP client based on fetch
+- pnpm - Fast, disk space efficient package manager
 
 ## Getting Started
 
@@ -62,7 +62,7 @@ The project is configured with path aliases for cleaner imports:
 
 - `~/` → `src/` directory
 
-**Example usage:**
+Example usage:
 
 ```typescript
 // Instead of: import { Button } from '../../components/Button'
