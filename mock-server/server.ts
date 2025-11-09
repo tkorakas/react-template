@@ -68,7 +68,6 @@ app.get(
   requireAuth,
   validateResource,
   (req: Request, res: Response) => {
-    return res.status(401).send();
     try {
       const { resource } = req.params;
 
