@@ -48,7 +48,8 @@ export class UserManager {
     };
 
     this.users.push(user);
-    await this.saveUsers();
+    // Note: New users are only stored in memory, not persisted to file
+    // Update users.json manually to persist test users
 
     const { password: _password, ...userResponse } = user;
     return userResponse;

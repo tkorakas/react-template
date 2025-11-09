@@ -4,6 +4,7 @@ import { PrivateRoute, PublicRoute } from '~/common/auth';
 import AboutPage from '~/features/about-page';
 import HomePage from '~/features/home-page';
 import LoginPage from '~/features/login';
+import RegisterPage from '~/features/register';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,14 @@ export const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <LoginPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: '/register',
+    element: (
+      <PublicRoute>
+        <RegisterPage />
       </PublicRoute>
     ),
   },

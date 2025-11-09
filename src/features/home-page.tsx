@@ -9,7 +9,6 @@ import { useAuth } from '~/common/auth';
 import { getTodos } from '~/data-access/api';
 import { Button } from '~/ui';
 
-// Form schema
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.email('Invalid email'),

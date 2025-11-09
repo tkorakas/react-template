@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/common/auth/use-auth';
 import { login } from '~/data-access/api';
-import { loginSchema, type LoginFormData } from './login.schema';
+import { loginSchema, type LoginFormData } from './schema';
 
 export function useLoginHandler() {
   const { setUser } = useAuth();

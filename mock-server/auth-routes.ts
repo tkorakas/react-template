@@ -31,10 +31,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
       email: user.email,
     };
 
-    res.status(201).json({
-      message: 'User registered successfully',
-      user,
-    });
+    res.status(201).json(user);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error, res);

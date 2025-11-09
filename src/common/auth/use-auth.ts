@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCurrentUser, logout } from './api';
 import type { User } from './types';
 
-const USER_QUERY_KEY = ['user'];
+export const USER_QUERY_KEY = ['user'];
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -17,9 +17,7 @@ export function useAuth() {
   const isAuthenticated = !!user;
 
   const setUser = (userData: User) => {
-    queryClient.setQueryData(USER_QUERY_KEY, {
-      user: userData,
-    });
+    queryClient.setQueryData(USER_QUERY_KEY, userData);
   };
 
   const clearUser = () => {

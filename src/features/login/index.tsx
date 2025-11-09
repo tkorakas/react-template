@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { useLoginHandler } from './use-handler';
 
 export default function LoginPage() {
@@ -93,9 +94,14 @@ export default function LoginPage() {
               <Text fontSize="sm" color="gray.600">
                 Don&apos;t have an account?
               </Text>
-              <Button variant="plain" colorScheme="blue" size="sm" p={0}>
-                Sign up here
-              </Button>
+              <Link
+                to="/register"
+                style={{ color: 'var(--chakra-colors-blue-500)' }}
+              >
+                <Button variant="plain" colorScheme="blue" size="sm" p={0}>
+                  Sign up here
+                </Button>
+              </Link>
             </HStack>
           </Box>
         </Stack>
