@@ -141,11 +141,10 @@ The template includes example implementations of:
 - [x] Mock server with Express and TypeScript
 - [x] Vite proxy configuration
 - [x] Auth flow
-- [ ] Registration
+- [x] Registration
 - [ ] Forgot password
-- [ ] Email login
-- [ ] OTP
-- [ ] Google login
+- [x] Email login
+- [x] OTP
 - [ ] GitHub login
 - [ ] LLM instructions https://zod.dev/llms.txt https://chakra-ui.com/llms.txt
 - [ ] Advanced Chakra UI integration
