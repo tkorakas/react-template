@@ -80,7 +80,7 @@ This template includes a mock API server for development purposes:
 
 ```bash
 # Start the mock server (runs on http://localhost:3001)
-pnpm run mock-server:dev
+pnpm run mock-server
 ```
 
 ### Available Endpoints
@@ -108,7 +108,7 @@ const response = await api.get('api/todos');
 1. Start the mock server:
 
    ```bash
-   pnpm run mock-server:dev
+   pnpm run mock-server
    ```
 
 2. Start the frontend development server:
@@ -118,6 +118,12 @@ const response = await api.get('api/todos');
    ```
 
 3. Open http://localhost:5174 (or the port shown in terminal)
+
+or start all
+
+```bash
+  pnpm run dev:full
+```
 
 ## Features
 
@@ -134,15 +140,16 @@ The template includes example implementations of:
 - [x] Linting & testing
 - [x] Mock server with Express and TypeScript
 - [x] Vite proxy configuration
-- [ ] Auth flow
-      -- [ ] Email login
-      -- [ ] OTP  
-       -- [ ] Google login
-      -- [ ] GitHub login
-- [ ] Advanced features
-      -- [ ] LLM instructions https://zod.dev/llms.txt https://chakra-ui.com/llms.txt
-      -- [ ] Advanced Chakra UI integration
-      -- [ ] Wire UI components with RHF
-      -- [ ] User settings
-      -- [ ] Edit/Create modal
-      -- [ ] Table with sorting and filtering
+- [x] Auth flow
+- [ ] Registration
+- [ ] Forgot password
+- [ ] Email login
+- [ ] OTP
+- [ ] Google login
+- [ ] GitHub login
+- [ ] LLM instructions https://zod.dev/llms.txt https://chakra-ui.com/llms.txt
+- [ ] Advanced Chakra UI integration
+- [ ] Wire UI components with RHF
+- [ ] User settings
+- [ ] Edit/Create modal
+- [ ] Table with sorting and filtering
