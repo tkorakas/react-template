@@ -174,10 +174,24 @@ The template includes example implementations of:
 - [ ] Forgot password
 - [x] Email login
 - [x] OTP
-- [ ] GitHub login
-- [ ] LLM instructions https://zod.dev/llms.txt https://chakra-ui.com/llms.txt
-- [ ] Advanced Chakra UI integration
+- [x] GitHub login
+- [x] LLM instructions
 - [ ] Wire UI components with RHF
 - [ ] User settings
 - [ ] Edit/Create modal
 - [ ] Table with sorting and filtering
+
+## Screenshots
+
+<details>
+<summary>View Screenshots</summary>
+
+![Login](screenshots/login.png)
+
+![Register](screenshots/register.png)
+
+![MFA](screenshots/mfa.png)
+
+![MFA Filled](screenshots/mfa-filled.png)
+
+</details>

@@ -167,3 +167,6 @@ const mutation = useMutation({
 - Export default component from index.tsx
 - Return object with named properties from handlers
 - Use path aliases with ~ prefix
+
+Zod instructions https://zod.dev/llms.txt
+Chakra instructions https://chakra-ui.com/llms.txt
