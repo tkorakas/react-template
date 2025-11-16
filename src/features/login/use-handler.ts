@@ -49,6 +49,5 @@ export function useLoginHandler() {
     form,
     handleSubmit,
     isLoading: loginMutation.isPending,
-    error: form.formState.errors.root?.message,
   };
 }

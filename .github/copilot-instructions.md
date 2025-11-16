@@ -157,6 +157,7 @@ const mutation = useMutation({
 - Use PascalCase for file names
 - Create separate data-access folders per feature
 - Generate documentation files (README.md, ARCHITECTURE.md, etc.)
+- Dont create barrel files
 
 ## Strict Rules - Always Do
 

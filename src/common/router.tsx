@@ -7,6 +7,7 @@ import LoginPage from '~/features/login';
 import MfaPage from '~/features/mfa';
 import OAuthCallbackPage from '~/features/oauth/callback';
 import RegisterPage from '~/features/register';
+import { AuthLayout } from '~/ui/auth-layout';
 
 export const router = createBrowserRouter([
   {
@@ -26,25 +27,31 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/login',
-    element: (
-      <PublicRoute>
-        <LoginPage />
-      </PublicRoute>
-    ),
+    element: <AuthLayout />,
+    children: [
+      {
+        path: '/login',
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: '/register',
+        element: (
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: '/mfa',
+        element: <MfaPage />,
+      },
+    ],
   },
-  {
-    path: '/register',
-    element: (
-      <PublicRoute>
-        <RegisterPage />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: '/mfa',
-    element: <MfaPage />,
-  },
+
   {
     path: '/oauth/:provider/callback',
     element: (
