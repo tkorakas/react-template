@@ -13,7 +13,7 @@ import { SimpleForm, TextInput } from '~/ui';
 import { useRegisterHandler } from './use-handler';
 
 export default function RegisterPage() {
-  const { form, isLoading, handleSubmit, error } = useRegisterHandler();
+  const { form, isLoading, handleSubmit } = useRegisterHandler();
 
   return (
     <Box>

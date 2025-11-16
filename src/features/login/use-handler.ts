@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/common/auth/use-auth';
-import { MfaRequiredError } from '~/common/errors';
+import { MfaRequiredError, handleApiFieldErrors } from '~/common/errors';
 import { login } from '~/data-access/api';
+import { toaster } from '~/ui';
 import { loginSchema, type LoginFormData } from './schema';
 
 export function useLoginHandler() {
@@ -29,14 +31,24 @@ export function useLoginHandler() {
       setUser(user);
       navigate(from, { replace: true });
     },
-    onError: error => {
+    onError: async error => {
       if (error instanceof MfaRequiredError) {
         navigate('/mfa');
         return;
       }
-      form.setError('root', {
-        type: 'manual',
-        message: 'Invalid email or password. Please try again.',
+
+      if (error instanceof HTTPError) {
+        const handled = await handleApiFieldErrors(error, form.setError);
+        if (handled) {
+          return;
+        }
+      }
+
+      toaster.create({
+        title: 'Login Failed',
+        description: 'An unexpected error occurred. Please try again.',
+        type: 'error',
+        duration: 5000,
       });
     },
   });

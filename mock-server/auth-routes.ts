@@ -49,7 +49,15 @@ authRouter.post('/register', async (req: Request, res: Response) => {
 
     if (error instanceof Error) {
       if (error.message === 'User with this email already exists') {
-        return res.status(409).json({ error: error.message });
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: [
+            {
+              field: 'email',
+              message: 'A user with this email already exists',
+            },
+          ],
+        });
       }
     }
 
@@ -68,7 +76,15 @@ authRouter.post('/login', async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: [
+          {
+            field: 'email',
+            message: 'Invalid email or password',
+          },
+        ],
+      });
     }
 
     req.session.user = {

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { queryClient } from '~/common/query-client';
 import { register } from '~/data-access/api';
+import { toaster } from '~/ui';
 import { registerSchema, type RegisterFormData } from './schema';
 
 export function useRegisterHandler() {
@@ -20,6 +21,21 @@ export function useRegisterHandler() {
       queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
       navigate('/');
     },
+    onError: async error => {
+      //   if (error instanceof HTTPError) {
+      //     const handled = await handleApiFieldErrors(error, form.setError);
+      //     if (handled) {
+      //       return;
+      //     }
+      //   }
+
+      toaster.create({
+        title: 'Registration Failed',
+        description: 'An unexpected error occurred. Please try again.',
+        type: 'error',
+        duration: 5000,
+      });
+    },
   });
 
   return {
@@ -28,6 +44,5 @@ export function useRegisterHandler() {
     handleSubmit: form.handleSubmit(data =>
       mutation.mutate(data as RegisterFormData)
     ),
-    error: mutation.error,
   };
 }

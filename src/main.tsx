@@ -9,6 +9,7 @@ import { AuthManager } from '~/common/auth';
 import { queryClient } from '~/common/query-client';
 import { router } from '~/common/router';
 import { system } from '~/common/system';
+import { Toaster } from '~/ui';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
@@ -20,6 +21,7 @@ createRoot(rootElement).render(
         <AuthManager>
           <RouterProvider router={router} />
         </AuthManager>
+        <Toaster />
       </ChakraProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
