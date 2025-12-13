@@ -2,14 +2,14 @@ import { Suspense, lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { PrivateRoute, PublicRoute } from '~/common/auth';
+import LoginPage from '~/features/login';
+import RegisterPage from '~/features/register';
 import { Loading } from '~/ui';
 
 const AboutPage = lazy(() => import('~/features/about-page'));
 const HomePage = lazy(() => import('~/features/home-page'));
-const LoginPage = lazy(() => import('~/features/login'));
 const MfaPage = lazy(() => import('~/features/mfa'));
 const OAuthCallbackPage = lazy(() => import('~/features/oauth/callback'));
-const RegisterPage = lazy(() => import('~/features/register'));
 const AuthLayout = lazy(() =>
   import('~/ui/auth-layout').then(module => ({ default: module.AuthLayout }))
 );
@@ -42,11 +42,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/login',
-            element: withSuspense(LoginPage, 'login-page'),
+            element: <LoginPage />,
           },
           {
             path: '/register',
-            element: withSuspense(RegisterPage, 'register-page'),
+            element: <RegisterPage />,
           },
           {
             path: '/mfa',
