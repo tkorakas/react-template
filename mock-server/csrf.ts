@@ -23,6 +23,13 @@ export function setCsrfCookie(res: Response, token: string): void {
   });
 }
 
+const CSRF_EXEMPT_PATHS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/mfa/verify',
+  '/auth/oauth',
+];
+
 export function csrfProtection(
   req: Request,
   res: Response,
@@ -31,6 +38,12 @@ export function csrfProtection(
   const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
 
   if (safeMethods.includes(req.method)) {
+    return next();
+  }
+
+  console.log('CSRF Protection Middleware Invoked', req.path);
+
+  if (CSRF_EXEMPT_PATHS.some(path => req.path.startsWith(path))) {
     return next();
   }
 

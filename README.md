@@ -212,6 +212,8 @@ The template includes example implementations of:
 <details>
 <summary>View Screenshots</summary>
 
+### Authentication
+
 ![Login](screenshots/login.png)
 
 ![Register](screenshots/register.png)
@@ -219,5 +221,15 @@ The template includes example implementations of:
 ![MFA](screenshots/mfa.png)
 
 ![MFA Filled](screenshots/mfa-filled.png)
+
+### Application
+
+![Home](screenshots/home.png)
+
+![About](screenshots/about.png)
+
+![Team Members](screenshots/team-members.png)
+
+![Create Team Member](screenshots/team-members-create.png)
 
 </details>

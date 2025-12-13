@@ -2,7 +2,7 @@
   "title": "Two-Factor Authentication",
   "description": "Enter the verification code sent to your device",
   "code": "Verification Code",
-  "codePlaceholder": "Enter 6-digit code",
+  "codePlaceholder": "0000",
   "submit": "Verify",
   "resend": "Resend code",
   "errors": {
