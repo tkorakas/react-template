@@ -7,5 +7,11 @@
   "submit": "Σύνδεση",
   "errors": {
     "invalidCredentials": "Μη έγκυρο email ή κωδικός"
+  },
+  "validation": {
+    "emailRequired": "Το email είναι υποχρεωτικό",
+    "emailInvalid": "Εισάγετε έγκυρο email",
+    "passwordRequired": "Ο κωδικός είναι υποχρεωτικός",
+    "passwordMin": "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες"
   }
 }

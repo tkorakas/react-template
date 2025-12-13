@@ -7,5 +7,9 @@
   "resend": "Resend code",
   "errors": {
     "invalidCode": "Invalid verification code"
+  },
+  "validation": {
+    "otpLength": "OTP must be exactly 4 digits",
+    "otpDigits": "OTP must contain only numbers"
   }
 }

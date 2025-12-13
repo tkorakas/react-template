@@ -19,6 +19,10 @@
     "role": "Role",
     "rolePlaceholder": "Enter role",
     "status": "Status",
-    "submit": "Create"
+    "submit": "Create",
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "roleMin": "Role must be at least 2 characters"
+    }
   }
 }

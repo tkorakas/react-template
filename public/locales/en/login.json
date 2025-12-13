@@ -7,5 +7,11 @@
   "submit": "Sign In",
   "errors": {
     "invalidCredentials": "Invalid email or password"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters"
   }
 }

@@ -188,8 +188,8 @@ The template includes example implementations of:
   - [ ] Bulk actions
 - [ ] Roles & Permissions
 - [ ] User management
-- [ ] Modals
-- [ ] Create & Edit
+- [x] Modals
+- [-] Create & Edit
 - [ ] Form components
 - [ ] File uploads
 - [ ] Multi-step form
@@ -201,7 +201,7 @@ The template includes example implementations of:
 - [ ] 404 page
 - [ ] Make auth flow configurable
 - [ ] Charts
-- [ ] CSRF
+- [x] CSRF
 - [x] Lazy loading on routes
 - [ ] Feature flags
 - [ ] Error monitoring

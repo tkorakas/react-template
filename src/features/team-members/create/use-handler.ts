@@ -1,16 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { createTeamMember } from '~/data-access/api';
 import { createTeamMemberSchema, type CreateTeamMemberInput } from './schema';
 
 export function useCreateTeamMemberHandler() {
+  const { t } = useTranslation('team-members');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const form = useForm<CreateTeamMemberInput>({
-    resolver: zodResolver(createTeamMemberSchema),
+    resolver: zodResolver(createTeamMemberSchema(t)),
     defaultValues: {
       name: '',
       role: '',

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/common/auth/use-auth';
 import { MfaRequiredError, handleApiFieldErrors } from '~/common/errors';
@@ -10,6 +11,7 @@ import { toaster } from '~/ui';
 import { loginSchema, type LoginFormData } from './schema';
 
 export function useLoginHandler() {
+  const { t } = useTranslation('login');
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,7 +20,7 @@ export function useLoginHandler() {
     (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
 
   const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema(t)),
     defaultValues: {
       email: '',
       password: '',

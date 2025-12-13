@@ -1,9 +1,11 @@
+import type { TFunction } from 'i18next';
 import { z } from 'zod';
 
-export const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
+export const registerSchema = (t: TFunction) =>
+  z.object({
+    name: z.string().min(2, t('validation.nameMin')),
+    email: z.email(t('validation.emailInvalid')),
+    password: z.string().min(6, t('validation.passwordMin')),
+  });
 
-export type RegisterFormData = z.infer<typeof registerSchema>;
+export type RegisterFormData = z.infer<ReturnType<typeof registerSchema>>;

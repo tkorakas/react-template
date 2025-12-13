@@ -13,5 +13,10 @@
   "login": "Login",
   "errors": {
     "emailTaken": "Email is already registered"
+  },
+  "validation": {
+    "nameMin": "Name must be at least 2 characters",
+    "emailInvalid": "Invalid email address",
+    "passwordMin": "Password must be at least 6 characters"
   }
 }

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { handleApiFieldErrors } from '~/common/errors';
@@ -11,10 +12,11 @@ import { toaster } from '~/ui';
 import { registerSchema, type RegisterFormData } from './schema';
 
 export function useRegisterHandler() {
+  const { t } = useTranslation('register');
   const navigate = useNavigate();
 
   const form = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema(t)),
   });
 
   const mutation = useMutation({
