@@ -226,8 +226,6 @@ The template includes example implementations of:
 
 ![Home](screenshots/home.png)
 
-![About](screenshots/about.png)
-
 ![Team Members](screenshots/team-members.png)
 
 ![Create Team Member](screenshots/team-members-create.png)
