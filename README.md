@@ -180,10 +180,10 @@ The template includes example implementations of:
 - [ ] User settings
 - [ ] Edit/Create modal
 - [ ] Table with sorting and filtering
-- [ ] Table
+- [x] Table
   - [ ] Filtering
-  - [ ] Sorting
-  - [ ] Pagination
+  - [x] Sorting
+  - [x] Pagination
   - [ ] Row selection
   - [ ] Bulk actions
 - [ ] Roles & Permissions
@@ -202,10 +202,10 @@ The template includes example implementations of:
 - [ ] Make auth flow configurable
 - [ ] Charts
 - [ ] CSRF
-- [ ] Lazy loading on routes
+- [x] Lazy loading on routes
 - [ ] Feature flags
 - [ ] Error monitoring
-- [ ] Internationalization
+- [x] Internationalization
 
 ## Screenshots
 
