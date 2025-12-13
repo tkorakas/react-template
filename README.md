@@ -176,10 +176,36 @@ The template includes example implementations of:
 - [x] OTP
 - [x] GitHub login
 - [x] LLM instructions
-- [ ] Wire UI components with RHF
+- [x] Wire UI components with RHF
 - [ ] User settings
 - [ ] Edit/Create modal
 - [ ] Table with sorting and filtering
+- [ ] Table
+  - [ ] Filtering
+  - [ ] Sorting
+  - [ ] Pagination
+  - [ ] Row selection
+  - [ ] Bulk actions
+- [ ] Roles & Permissions
+- [ ] User management
+- [ ] Modals
+- [ ] Create & Edit
+- [ ] Form components
+- [ ] File uploads
+- [ ] Multi-step form
+- [ ] Tabs with routing
+- [ ] Authenticator
+- [ ] Async jobs
+- [ ] Push notifications
+- [ ] Form components
+- [ ] 404 page
+- [ ] Make auth flow configurable
+- [ ] Charts
+- [ ] CSRF
+- [ ] Lazy loading on routes
+- [ ] Feature flags
+- [ ] Error monitoring
+- [ ] Internationalization
 
 ## Screenshots
 
