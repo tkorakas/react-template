@@ -10,5 +10,15 @@
     "active": "Ενεργός",
     "pending": "Εκκρεμεί",
     "inactive": "Ανενεργός"
+  },
+  "create": {
+    "title": "Δημιουργία Μέλους Ομάδας",
+    "addButton": "Προσθήκη Μέλους",
+    "name": "Όνομα",
+    "namePlaceholder": "Εισάγετε όνομα",
+    "role": "Ρόλος",
+    "rolePlaceholder": "Εισάγετε ρόλο",
+    "status": "Κατάσταση",
+    "submit": "Δημιουργία"
   }
 }

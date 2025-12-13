@@ -86,3 +86,12 @@ export const getTeamMembers = async (
   const data = await response.json();
   return teamMembersResponseSchema.parse(data);
 };
+
+export const createTeamMember = async (data: {
+  name: string;
+  role: string;
+  status: 'Active' | 'Pending' | 'Inactive';
+}) => {
+  const response = await httpClient.post('team-members', { json: data });
+  return response.json();
+};

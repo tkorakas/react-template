@@ -10,6 +10,7 @@ export {
   type Row,
   type SortingState,
 } from './data-table';
+export { Drawer } from './drawer';
 export { Radio } from './form-fields/radio';
 export { TextInput } from './form-fields/text-input';
 export { Loading } from './loading';

@@ -20,6 +20,7 @@ export class FileSessionStore extends Store {
         const session = {
           user: sessionData.user,
           mfaVerified: sessionData.mfaVerified,
+          csrfToken: sessionData.csrfToken,
           cookie: {
             originalMaxAge: 24 * 60 * 60 * 1000, // 24 hours
             expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -44,13 +45,12 @@ export class FileSessionStore extends Store {
     callback?: (err?: unknown) => void
   ): void {
     try {
-      if (session.user) {
-        sessionManager.updateSession(
-          sessionId,
-          session.user,
-          session.mfaVerified
-        );
-      }
+      sessionManager.updateSession(
+        sessionId,
+        session.user,
+        session.mfaVerified,
+        session.csrfToken
+      );
       callback?.();
     } catch (error) {
       callback?.(error);

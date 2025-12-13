@@ -10,6 +10,7 @@ import {
   initializeOAuthProviders,
   requireAuth,
 } from './auth-routes.js';
+import { csrfProtection, ensureCsrfToken } from './csrf.js';
 import { DatabaseManager, type BaseEntity } from './database';
 import { FileSessionStore } from './file-session-store';
 import { PaginationQuerySchema, SchemaRegistry } from './schemas';
@@ -47,6 +48,9 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(ensureCsrfToken);
+app.use('/api', csrfProtection);
 
 app.use('/api/auth', authRouter);
 

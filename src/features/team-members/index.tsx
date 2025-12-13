@@ -1,5 +1,6 @@
-import { Box, Heading, Input, Stack } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, Stack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
+import { Link, Outlet } from 'react-router-dom';
 import { DataTable, Loading, Pagination } from '~/ui';
 import { useTeamMembersHandler } from './use-handler';
 
@@ -23,7 +24,12 @@ export default function TeamMembersPage() {
   return (
     <Box>
       <Stack gap={6}>
-        <Heading>{t('title')}</Heading>
+        <Flex justify="space-between" align="center">
+          <Heading>{t('title')}</Heading>
+          <Link to="create">
+            <Button colorScheme="blue">{t('create.addButton')}</Button>
+          </Link>
+        </Flex>
 
         <Input
           maxW="400px"
@@ -53,6 +59,8 @@ export default function TeamMembersPage() {
           isLoading={isLoading}
         />
       </Stack>
+
+      <Outlet />
     </Box>
   );
 }

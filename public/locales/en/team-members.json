@@ -10,5 +10,15 @@
     "active": "Active",
     "pending": "Pending",
     "inactive": "Inactive"
+  },
+  "create": {
+    "title": "Create Team Member",
+    "addButton": "Add Team Member",
+    "name": "Name",
+    "namePlaceholder": "Enter name",
+    "role": "Role",
+    "rolePlaceholder": "Enter role",
+    "status": "Status",
+    "submit": "Create"
   }
 }

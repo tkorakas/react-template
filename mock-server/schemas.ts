@@ -16,6 +16,16 @@ export const TodoSchema = BaseEntitySchema.extend({
 
 export const TodoUpdateSchema = TodoSchema.partial().omit({ id: true });
 
+export const TeamMemberSchema = BaseEntitySchema.extend({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  role: z.string().min(2, 'Role must be at least 2 characters'),
+  status: z.enum(['Active', 'Pending', 'Inactive']),
+});
+
+export const TeamMemberUpdateSchema = TeamMemberSchema.partial().omit({
+  id: true,
+});
+
 export const PaginationQuerySchema = z.object({
   page: z
     .string()
@@ -33,6 +43,10 @@ export const SchemaRegistry = {
   todos: {
     create: TodoSchema,
     update: TodoUpdateSchema,
+  },
+  'team-members': {
+    create: TeamMemberSchema,
+    update: TeamMemberUpdateSchema,
   },
 } as const;
 

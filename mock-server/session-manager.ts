@@ -5,6 +5,7 @@ import type { SessionUser } from './user-schemas';
 interface SessionData {
   user?: SessionUser;
   mfaVerified?: boolean;
+  csrfToken?: string;
   createdAt: number;
   expiresAt: number;
 }
@@ -91,12 +92,14 @@ export class SessionManager {
   createSession(
     sessionId: string,
     user: SessionUser,
-    mfaVerified = false
+    mfaVerified = false,
+    csrfToken?: string
   ): void {
     const now = Date.now();
     this.sessions[sessionId] = {
       user,
       mfaVerified,
+      csrfToken,
       createdAt: now,
       expiresAt: now + this.SESSION_DURATION,
     };
@@ -105,7 +108,7 @@ export class SessionManager {
 
   getSession(
     sessionId: string
-  ): { user: SessionUser; mfaVerified?: boolean } | null {
+  ): { user?: SessionUser; mfaVerified?: boolean; csrfToken?: string } | null {
     const session = this.sessions[sessionId];
 
     if (!session) {
@@ -117,31 +120,36 @@ export class SessionManager {
       return null;
     }
 
-    if (!session.user) {
-      return null;
-    }
-
     return {
       user: session.user,
       mfaVerified: session.mfaVerified,
+      csrfToken: session.csrfToken,
     };
   }
 
   updateSession(
     sessionId: string,
-    user: SessionUser,
-    mfaVerified?: boolean
+    user?: SessionUser,
+    mfaVerified?: boolean,
+    csrfToken?: string
   ): void {
     const session = this.sessions[sessionId];
 
     if (!session || session.expiresAt < Date.now()) {
-      this.createSession(sessionId, user, mfaVerified);
+      if (user) {
+        this.createSession(sessionId, user, mfaVerified, csrfToken);
+      }
       return;
     }
 
-    session.user = user;
+    if (user !== undefined) {
+      session.user = user;
+    }
     if (mfaVerified !== undefined) {
       session.mfaVerified = mfaVerified;
+    }
+    if (csrfToken !== undefined) {
+      session.csrfToken = csrfToken;
     }
     this.saveSessions();
   }
