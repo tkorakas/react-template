@@ -1,7 +1,7 @@
-import { Box, VStack, Heading, Text, Button } from '@chakra-ui/react';
+import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-function AboutPage() {
+export default function AboutPage() {
   return (
     <Box p={8}>
       <VStack gap={6} align="start">
@@ -46,5 +46,3 @@ function AboutPage() {
     </Box>
   );
 }
-
-export default AboutPage;

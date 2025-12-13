@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
+import { handleApiFieldErrors } from '~/common/errors';
 import { queryClient } from '~/common/query-client';
 import { register } from '~/data-access/api';
 import { toaster } from '~/ui';
@@ -22,12 +24,12 @@ export function useRegisterHandler() {
       navigate('/');
     },
     onError: async error => {
-      //   if (error instanceof HTTPError) {
-      //     const handled = await handleApiFieldErrors(error, form.setError);
-      //     if (handled) {
-      //       return;
-      //     }
-      //   }
+      if (error instanceof HTTPError) {
+        const handled = await handleApiFieldErrors(error, form.setError);
+        if (handled) {
+          return;
+        }
+      }
 
       toaster.create({
         title: 'Registration Failed',

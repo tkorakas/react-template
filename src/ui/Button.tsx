@@ -28,5 +28,3 @@ export const Button = ({
     </ChakraButton>
   );
 };
-
-export default Button;

@@ -1,8 +1,8 @@
-import { type PropsWithChildren } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+
 import { useAuth } from './use-auth';
 
-export function PrivateRoute({ children }: PropsWithChildren) {
+export function PrivateRoute() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -10,5 +10,5 @@ export function PrivateRoute({ children }: PropsWithChildren) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }

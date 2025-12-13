@@ -1,63 +1,63 @@
+import { Suspense, lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { PrivateRoute, PublicRoute } from '~/common/auth';
-import AboutPage from '~/features/about-page';
-import HomePage from '~/features/home-page';
-import LoginPage from '~/features/login';
-import MfaPage from '~/features/mfa';
-import OAuthCallbackPage from '~/features/oauth/callback';
-import RegisterPage from '~/features/register';
-import { AuthLayout } from '~/ui/auth-layout';
+import { Loading } from '~/ui';
+
+const AboutPage = lazy(() => import('~/features/about-page'));
+const HomePage = lazy(() => import('~/features/home-page'));
+const LoginPage = lazy(() => import('~/features/login'));
+const MfaPage = lazy(() => import('~/features/mfa'));
+const OAuthCallbackPage = lazy(() => import('~/features/oauth/callback'));
+const RegisterPage = lazy(() => import('~/features/register'));
+const AuthLayout = lazy(() =>
+  import('~/ui/auth-layout').then(module => ({ default: module.AuthLayout }))
+);
+
+const withSuspense = (Component: ComponentType, key: string) => (
+  <Suspense key={key} fallback={<Loading />}>
+    <Component />
+  </Suspense>
+);
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: (
-      <PrivateRoute>
-        <HomePage />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: '/about',
-    element: (
-      <PrivateRoute>
-        <AboutPage />
-      </PrivateRoute>
-    ),
-  },
-  {
-    element: <AuthLayout />,
+    element: <PrivateRoute />,
     children: [
       {
-        path: '/login',
-        element: (
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        ),
+        path: '/',
+        element: withSuspense(HomePage, 'home-page'),
       },
       {
-        path: '/register',
-        element: (
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: '/mfa',
-        element: <MfaPage />,
+        path: '/about',
+        element: withSuspense(AboutPage, 'about-page'),
       },
     ],
   },
-
   {
-    path: '/oauth/:provider/callback',
-    element: (
-      <PublicRoute>
-        <OAuthCallbackPage />
-      </PublicRoute>
-    ),
+    element: <PublicRoute />,
+    children: [
+      {
+        element: <AuthLayout />,
+        children: [
+          {
+            path: '/login',
+            element: withSuspense(LoginPage, 'login-page'),
+          },
+          {
+            path: '/register',
+            element: withSuspense(RegisterPage, 'register-page'),
+          },
+          {
+            path: '/mfa',
+            element: withSuspense(MfaPage, 'mfa-page'),
+          },
+        ],
+      },
+      {
+        path: '/oauth/:provider/callback',
+        element: withSuspense(OAuthCallbackPage, 'oauth-callback-page'),
+      },
+    ],
   },
 ]);
