@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getTeamMembers } from '~/data-access/api';
 import type { ColumnDef, SortingState } from '~/ui';
 
@@ -10,17 +11,21 @@ type TeamMember = {
   status: 'Active' | 'Pending' | 'Inactive';
 };
 
-const columns: ColumnDef<TeamMember>[] = [
-  { accessorKey: 'name', header: 'Name' },
-  { accessorKey: 'role', header: 'Role' },
-  { accessorKey: 'status', header: 'Status' },
-];
-
 export function useTeamMembersHandler() {
+  const { t } = useTranslation('team-members');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [page, setPage] = useState(1);
   const limit = 5;
+
+  const columns: ColumnDef<TeamMember>[] = useMemo(
+    () => [
+      { accessorKey: 'name', header: t('columns.name') },
+      { accessorKey: 'role', header: t('columns.role') },
+      { accessorKey: 'status', header: t('columns.status') },
+    ],
+    [t]
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ['team-members', page],

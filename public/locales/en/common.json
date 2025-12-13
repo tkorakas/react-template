@@ -1,0 +1,26 @@
+{
+  "appName": "React App",
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "teamMembers": "Team Members"
+  },
+  "actions": {
+    "logout": "Logout",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading..."
+  },
+  "pagination": {
+    "page": "Page {{current}} of {{total}}"
+  },
+  "search": {
+    "placeholder": "Search..."
+  },
+  "table": {
+    "noResults": "No results found"
+  }
+}

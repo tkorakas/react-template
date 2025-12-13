@@ -7,12 +7,15 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { OAuthButton } from '~/common/auth';
 import { SimpleForm, TextInput } from '~/ui';
 import { useRegisterHandler } from './use-handler';
 
 export default function RegisterPage() {
+  const { t } = useTranslation('register');
+  const { t: tAuth } = useTranslation('auth');
   const { form, isLoading, handleSubmit } = useRegisterHandler();
 
   return (
@@ -20,17 +23,17 @@ export default function RegisterPage() {
       <Stack gap={6}>
         <Box textAlign="center">
           <Heading size="lg" mb={2}>
-            Create Account
+            {t('title')}
           </Heading>
-          <Text color="gray.600">Sign up for a new account</Text>
+          <Text color="gray.600">{tAuth('signIn')}</Text>
         </Box>
 
         <SimpleForm onSubmit={handleSubmit}>
           <TextInput
             {...form.register('name')}
             type="text"
-            label="Full Name"
-            placeholder="Enter your full name"
+            label={t('name')}
+            placeholder={t('namePlaceholder')}
             disabled={isLoading}
             error={form.formState.errors.name?.message}
           />
@@ -38,8 +41,8 @@ export default function RegisterPage() {
           <TextInput
             {...form.register('email')}
             type="email"
-            label="Email"
-            placeholder="Enter your email"
+            label={t('email')}
+            placeholder={t('emailPlaceholder')}
             disabled={isLoading}
             error={form.formState.errors.email?.message}
           />
@@ -47,8 +50,8 @@ export default function RegisterPage() {
           <TextInput
             {...form.register('password')}
             type="password"
-            label="Password"
-            placeholder="Enter your password"
+            label={t('password')}
+            placeholder={t('passwordPlaceholder')}
             disabled={isLoading}
             error={form.formState.errors.password?.message}
           />
@@ -56,11 +59,10 @@ export default function RegisterPage() {
           <Button
             type="submit"
             loading={isLoading}
-            loadingText="Creating account..."
             colorScheme="blue"
             size="lg"
           >
-            Create Account
+            {t('submit')}
           </Button>
         </SimpleForm>
 
@@ -75,24 +77,26 @@ export default function RegisterPage() {
             px={3}
           >
             <Text fontSize="sm" color="gray.500">
-              OR
+              {tAuth('orContinueWith')}
             </Text>
           </Box>
         </Box>
 
-        <OAuthButton provider="github">Sign in with GitHub</OAuthButton>
+        <OAuthButton provider="github">
+          {tAuth('orContinueWith')} GitHub
+        </OAuthButton>
 
         <Box textAlign="center">
           <HStack justify="center" gap={1}>
             <Text fontSize="sm" color="gray.600">
-              Already have an account?
+              {t('hasAccount')}
             </Text>
             <Link
               to="/login"
               style={{ color: 'var(--chakra-colors-blue-500)' }}
             >
               <Button variant="plain" colorScheme="blue" size="sm" p={0}>
-                Sign in here
+                {t('login')}
               </Button>
             </Link>
           </HStack>

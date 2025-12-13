@@ -1,0 +1,11 @@
+{
+  "title": "Σύνδεση",
+  "email": "Email",
+  "emailPlaceholder": "Εισάγετε το email σας",
+  "password": "Κωδικός",
+  "passwordPlaceholder": "Εισάγετε τον κωδικό σας",
+  "submit": "Σύνδεση",
+  "errors": {
+    "invalidCredentials": "Μη έγκυρο email ή κωδικός"
+  }
+}

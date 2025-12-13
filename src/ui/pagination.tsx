@@ -5,6 +5,7 @@ import {
   Pagination as ChakraPagination,
   Text,
 } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 type PaginationProps = {
@@ -23,10 +24,12 @@ export function Pagination({
   pageSize,
   onPageChange,
 }: PaginationProps) {
+  const { t } = useTranslation();
+
   return (
     <Flex justify="space-between" align="center" gap={4}>
       <Text fontSize="sm" color="gray.600">
-        Page {currentPage} of {totalPages}
+        {t('pagination.page', { current: currentPage, total: totalPages })}
       </Text>
 
       <ChakraPagination.Root

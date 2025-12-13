@@ -1,0 +1,17 @@
+{
+  "title": "Εγγραφή",
+  "name": "Όνομα",
+  "namePlaceholder": "Εισάγετε το όνομά σας",
+  "email": "Email",
+  "emailPlaceholder": "Εισάγετε το email σας",
+  "password": "Κωδικός",
+  "passwordPlaceholder": "Δημιουργήστε κωδικό",
+  "confirmPassword": "Επιβεβαίωση Κωδικού",
+  "confirmPasswordPlaceholder": "Επιβεβαιώστε τον κωδικό σας",
+  "submit": "Δημιουργία Λογαριασμού",
+  "hasAccount": "Έχετε ήδη λογαριασμό;",
+  "login": "Σύνδεση",
+  "errors": {
+    "emailTaken": "Το email είναι ήδη καταχωρημένο"
+  }
+}

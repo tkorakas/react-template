@@ -7,12 +7,15 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { OAuthButton } from '~/common/auth';
 import { SimpleForm, TextInput } from '~/ui';
 import { useLoginHandler } from './use-handler';
 
 export default function LoginPage() {
+  const { t } = useTranslation('login');
+  const { t: tAuth } = useTranslation('auth');
   const { form, handleSubmit, isLoading } = useLoginHandler();
 
   const {
@@ -25,23 +28,23 @@ export default function LoginPage() {
       <Stack gap={6}>
         <Box textAlign="center">
           <Heading size="lg" mb={2}>
-            Welcome Back
+            {tAuth('welcome')}
           </Heading>
-          <Text color="gray.600">Please sign in to your account</Text>
+          <Text color="gray.600">{tAuth('signIn')}</Text>
         </Box>
         <SimpleForm onSubmit={handleSubmit}>
           <TextInput
             type="email"
-            label="Email"
-            placeholder="Enter your email"
+            label={t('email')}
+            placeholder={t('emailPlaceholder')}
             error={errors.email?.message}
             {...register('email')}
           />
 
           <TextInput
             type="password"
-            label="Password"
-            placeholder="Enter your password"
+            label={t('password')}
+            placeholder={t('passwordPlaceholder')}
             error={errors.password?.message}
             {...register('password')}
           />
@@ -52,7 +55,7 @@ export default function LoginPage() {
             size="lg"
             loading={isLoading}
           >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {t('submit')}
           </Button>
         </SimpleForm>
 
@@ -67,24 +70,26 @@ export default function LoginPage() {
             px={3}
           >
             <Text fontSize="sm" color="gray.500">
-              OR
+              {tAuth('orContinueWith')}
             </Text>
           </Box>
         </Box>
 
-        <OAuthButton provider="github">Sign in with GitHub</OAuthButton>
+        <OAuthButton provider="github">
+          {tAuth('orContinueWith')} GitHub
+        </OAuthButton>
 
         <Box textAlign="center">
           <HStack justify="center" gap={1}>
             <Text fontSize="sm" color="gray.600">
-              Don&apos;t have an account?
+              {tAuth('noAccount')}
             </Text>
             <Link
               to="/register"
               style={{ color: 'var(--chakra-colors-blue-500)' }}
             >
               <Button variant="plain" colorScheme="blue" size="sm" p={0}>
-                Sign up here
+                {tAuth('register')}
               </Button>
             </Link>
           </HStack>

@@ -1,0 +1,17 @@
+{
+  "title": "Register",
+  "name": "Name",
+  "namePlaceholder": "Enter your name",
+  "email": "Email",
+  "emailPlaceholder": "Enter your email",
+  "password": "Password",
+  "passwordPlaceholder": "Create a password",
+  "confirmPassword": "Confirm Password",
+  "confirmPasswordPlaceholder": "Confirm your password",
+  "submit": "Create Account",
+  "hasAccount": "Already have an account?",
+  "login": "Login",
+  "errors": {
+    "emailTaken": "Email is already registered"
+  }
+}

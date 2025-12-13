@@ -1,15 +1,16 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { StrictMode } from 'react';
+import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import { AuthManager } from '~/common/auth';
+import '~/common/i18n';
 import { queryClient } from '~/common/query-client';
 import { router } from '~/common/router';
 import { system } from '~/common/system';
-import { Toaster } from '~/ui';
+import { Loading, Toaster } from '~/ui';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
@@ -18,9 +19,11 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ChakraProvider value={system}>
-        <AuthManager>
-          <RouterProvider router={router} />
-        </AuthManager>
+        <Suspense fallback={<Loading />}>
+          <AuthManager>
+            <RouterProvider router={router} />
+          </AuthManager>
+        </Suspense>
         <Toaster />
       </ChakraProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -1,0 +1,26 @@
+{
+  "appName": "React Εφαρμογή",
+  "navigation": {
+    "home": "Αρχική",
+    "about": "Σχετικά",
+    "teamMembers": "Μέλη Ομάδας"
+  },
+  "actions": {
+    "logout": "Αποσύνδεση",
+    "submit": "Υποβολή",
+    "cancel": "Ακύρωση",
+    "save": "Αποθήκευση",
+    "delete": "Διαγραφή",
+    "edit": "Επεξεργασία",
+    "loading": "Φόρτωση..."
+  },
+  "pagination": {
+    "page": "Σελίδα {{current}} από {{total}}"
+  },
+  "search": {
+    "placeholder": "Αναζήτηση..."
+  },
+  "table": {
+    "noResults": "Δεν βρέθηκαν αποτελέσματα"
+  }
+}

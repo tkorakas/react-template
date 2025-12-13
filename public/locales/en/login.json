@@ -1,0 +1,11 @@
+{
+  "title": "Login",
+  "email": "Email",
+  "emailPlaceholder": "Enter your email",
+  "password": "Password",
+  "passwordPlaceholder": "Enter your password",
+  "submit": "Sign In",
+  "errors": {
+    "invalidCredentials": "Invalid email or password"
+  }
+}

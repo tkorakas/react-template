@@ -1,0 +1,14 @@
+{
+  "title": "Team Members",
+  "searchPlaceholder": "Search team members...",
+  "columns": {
+    "name": "Name",
+    "role": "Role",
+    "status": "Status"
+  },
+  "status": {
+    "active": "Active",
+    "pending": "Pending",
+    "inactive": "Inactive"
+  }
+}

@@ -1,8 +1,10 @@
 import { Box, Heading, Input, Stack } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { DataTable, Loading, Pagination } from '~/ui';
 import { useTeamMembersHandler } from './use-handler';
 
 export default function TeamMembersPage() {
+  const { t } = useTranslation('team-members');
   const {
     data,
     columns,
@@ -21,11 +23,11 @@ export default function TeamMembersPage() {
   return (
     <Box>
       <Stack gap={6}>
-        <Heading>Team Members</Heading>
+        <Heading>{t('title')}</Heading>
 
         <Input
           maxW="400px"
-          placeholder="Search team members..."
+          placeholder={t('searchPlaceholder')}
           value={globalFilter}
           onChange={e => setGlobalFilter(e.target.value)}
         />

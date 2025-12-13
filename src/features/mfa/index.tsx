@@ -1,8 +1,10 @@
 import { Alert, Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { SimpleForm, TextInput } from '~/ui';
 import { useMfaHandler } from './use-handler';
 
 export default function MfaPage() {
+  const { t } = useTranslation('mfa');
   const { form, isLoading, handleSubmit, error } = useMfaHandler();
 
   return (
@@ -10,17 +12,15 @@ export default function MfaPage() {
       <Stack gap={6}>
         <Box textAlign="center">
           <Heading size="lg" mb={2}>
-            Two-Factor Authentication
+            {t('title')}
           </Heading>
-          <Text color="gray.600">
-            Enter the 4-digit code from your authenticator app
-          </Text>
+          <Text color="gray.600">{t('description')}</Text>
         </Box>
 
         {error && (
           <Alert.Root status="error">
             <Alert.Description>
-              MFA verification failed: {error.message}
+              {t('errors.invalidCode')}: {error.message}
             </Alert.Description>
           </Alert.Root>
         )}
@@ -29,8 +29,8 @@ export default function MfaPage() {
           <TextInput
             {...form.register('otp')}
             type="text"
-            label="Verification Code"
-            placeholder="0000"
+            label={t('code')}
+            placeholder={t('codePlaceholder')}
             disabled={isLoading}
             error={form.formState.errors.otp?.message}
             maxLength={4}
@@ -43,17 +43,16 @@ export default function MfaPage() {
           <Button
             type="submit"
             loading={isLoading}
-            loadingText="Verifying..."
             colorScheme="blue"
             size="lg"
           >
-            Verify Code
+            {t('submit')}
           </Button>
         </SimpleForm>
 
         <Box textAlign="center">
           <Text fontSize="sm" color="gray.600">
-            Check your console for the generated OTP code during development
+            {t('resend')}
           </Text>
         </Box>
       </Stack>

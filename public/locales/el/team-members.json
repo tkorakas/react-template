@@ -1,0 +1,14 @@
+{
+  "title": "Μέλη Ομάδας",
+  "searchPlaceholder": "Αναζήτηση μελών ομάδας...",
+  "columns": {
+    "name": "Όνομα",
+    "role": "Ρόλος",
+    "status": "Κατάσταση"
+  },
+  "status": {
+    "active": "Ενεργός",
+    "pending": "Εκκρεμεί",
+    "inactive": "Ανενεργός"
+  }
+}

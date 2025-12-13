@@ -8,16 +8,18 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '~/common/auth';
 
 const navigation = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Team Members', path: '/team-members' },
+  { nameKey: 'navigation.home', path: '/' },
+  { nameKey: 'navigation.about', path: '/about' },
+  { nameKey: 'navigation.teamMembers', path: '/team-members' },
 ];
 
 export function AppLayout() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
 
   return (
@@ -32,7 +34,7 @@ export function AppLayout() {
       >
         <VStack align="stretch" gap={2}>
           <Text fontSize="xl" fontWeight="bold" mb={4} px={3}>
-            React App
+            {t('appName')}
           </Text>
           {navigation.map(item => (
             <NavLink
@@ -53,7 +55,7 @@ export function AppLayout() {
                 transition: 'all 0.2s',
               })}
             >
-              {item.name}
+              {t(item.nameKey)}
             </NavLink>
           ))}
         </VStack>
@@ -108,7 +110,7 @@ export function AppLayout() {
                         color="red.500"
                         onClick={logout}
                       >
-                        Logout
+                        {t('actions.logout')}
                       </Menu.Item>
                     </Menu.Content>
                   </Menu.Positioner>
