@@ -18,6 +18,9 @@ export default function HomePage() {
         <Link to="/about">
           <Button variant="outline">Go to About Page</Button>
         </Link>
+        <Link to="/team-members">
+          <Button variant="outline">View Team Members</Button>
+        </Link>
         <Button onClick={handleLogout} colorScheme="red">
           Logout
         </Button>

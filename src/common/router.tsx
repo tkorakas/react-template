@@ -10,6 +10,7 @@ const AboutPage = lazy(() => import('~/features/about-page'));
 const HomePage = lazy(() => import('~/features/home-page'));
 const MfaPage = lazy(() => import('~/features/mfa'));
 const OAuthCallbackPage = lazy(() => import('~/features/oauth/callback'));
+const TeamMembersPage = lazy(() => import('~/features/team-members'));
 const AuthLayout = lazy(() =>
   import('~/ui/auth-layout').then(module => ({ default: module.AuthLayout }))
 );
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: '/about',
         element: withSuspense(AboutPage, 'about-page'),
+      },
+      {
+        path: '/team-members',
+        element: withSuspense(TeamMembersPage, 'team-members'),
       },
     ],
   },

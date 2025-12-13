@@ -5,8 +5,13 @@ import type {
   CurrentUserResponse,
   LoginRequest,
   RegisterRequest,
+  TeamMembersResponse,
 } from './api.schema';
-import { currentUserResponseSchema, userResponseSchema } from './api.schema';
+import {
+  currentUserResponseSchema,
+  teamMembersResponseSchema,
+  userResponseSchema,
+} from './api.schema';
 
 export const register = async (userData: RegisterRequest) => {
   const response = await httpClient.post('auth/register', {
@@ -69,4 +74,15 @@ export const oauthCallback = async (provider: string, code: string) => {
 
 export const getTodos = async (page = 1, limit = 5) => {
   return httpClient.get(`todos?page=${page}&limit=${limit}`).json();
+};
+
+export const getTeamMembers = async (
+  page = 1,
+  limit = 10
+): Promise<TeamMembersResponse> => {
+  const response = await httpClient.get(
+    `team-members?page=${page}&limit=${limit}`
+  );
+  const data = await response.json();
+  return teamMembersResponseSchema.parse(data);
 };
