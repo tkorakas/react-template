@@ -19,7 +19,7 @@ export default function TeamMembersPage() {
   }
 
   return (
-    <Box p={8}>
+    <Box>
       <Stack gap={6}>
         <Heading>Team Members</Heading>
 
@@ -45,6 +45,8 @@ export default function TeamMembersPage() {
         <Pagination
           currentPage={pagination.currentPage}
           totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          pageSize={pagination.pageSize}
           onPageChange={pagination.onPageChange}
           isLoading={isLoading}
         />

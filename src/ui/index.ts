@@ -1,3 +1,4 @@
+export { AppLayout } from './app-layout';
 export { AuthLayout } from './auth-layout';
 export { Button } from './button';
 export { Checkbox } from './form-fields/checkbox';

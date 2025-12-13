@@ -11,6 +11,9 @@ const HomePage = lazy(() => import('~/features/home-page'));
 const MfaPage = lazy(() => import('~/features/mfa'));
 const OAuthCallbackPage = lazy(() => import('~/features/oauth/callback'));
 const TeamMembersPage = lazy(() => import('~/features/team-members'));
+const AppLayout = lazy(() =>
+  import('~/ui/app-layout').then(module => ({ default: module.AppLayout }))
+);
 const AuthLayout = lazy(() =>
   import('~/ui/auth-layout').then(module => ({ default: module.AuthLayout }))
 );
@@ -26,16 +29,21 @@ export const router = createBrowserRouter([
     element: <PrivateRoute />,
     children: [
       {
-        path: '/',
-        element: withSuspense(HomePage, 'home-page'),
-      },
-      {
-        path: '/about',
-        element: withSuspense(AboutPage, 'about-page'),
-      },
-      {
-        path: '/team-members',
-        element: withSuspense(TeamMembersPage, 'team-members'),
+        element: <AppLayout />,
+        children: [
+          {
+            path: '/',
+            element: withSuspense(HomePage, 'home-page'),
+          },
+          {
+            path: '/about',
+            element: withSuspense(AboutPage, 'about-page'),
+          },
+          {
+            path: '/team-members',
+            element: withSuspense(TeamMembersPage, 'team-members'),
+          },
+        ],
       },
     ],
   },

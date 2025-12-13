@@ -38,7 +38,8 @@ export function useTeamMembersHandler() {
     pagination: {
       currentPage: data?.page ?? 1,
       totalPages: data?.totalPages ?? 1,
-      total: data?.total ?? 0,
+      totalItems: data?.total ?? 0,
+      pageSize: limit,
       onPageChange: setPage,
     },
   };
