@@ -1,0 +1,33 @@
+# Forms
+
+Forms follow a strict 3-file pattern per feature.
+
+## Pattern
+
+```text
+<feature>.schema.ts   -> validation + type inference
+<feature>.handler.ts  -> useForm/useMutation orchestration
+<feature>.page.tsx    -> rendering and wiring only
+```
+
+## Libraries
+
+- React Hook Form for state and field registration.
+- Zod for schema validation.
+- `@hookform/resolvers/zod` for resolver integration.
+- TanStack Query for submit mutations.
+
+## Recommended implementation flow
+
+1. Define a Zod schema and inferred type.
+2. Build handler with `useForm` and `useMutation`.
+3. Use shared `SimpleForm` and form fields in page.
+4. Call API function from `~/data-access/api` only.
+5. Route on success and map API field errors when needed.
+
+## Real examples
+
+- Simple form: `src/features/login`
+- Auth registration form: `src/features/register`
+- Advanced mixed-field form: `src/features/advanced-form`
+- Drawer-based create flow: `src/features/team-members/create`

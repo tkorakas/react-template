@@ -1,0 +1,39 @@
+# Auth
+
+Authentication behavior is split across shared auth infrastructure and feature implementations.
+
+## Shared auth infrastructure
+
+Located in `src/common/auth`:
+
+- `use-auth.ts`: session query state (`user`, `isAuthenticated`, `logout`, etc.).
+- `private-route.tsx`: guards protected application routes.
+- `public-route.tsx`: prevents authenticated users from revisiting auth pages.
+- `auth-manager.tsx`: handles global auth loading state.
+- `auth-hooks.ts`: HTTP hook integration concerns.
+
+## Feature flows
+
+- Login: `src/features/login`
+- Register: `src/features/register`
+- MFA: `src/features/mfa`
+- OAuth callback: `src/features/oauth`
+
+## API endpoints in use
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/verify-mfa`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+- `GET /api/auth/oauth/:provider/authorize`
+- `POST /api/auth/oauth/:provider/callback`
+
+## Flow summary
+
+1. User signs in using credentials or OAuth.
+2. Handlers call `~/data-access/api` auth functions.
+3. Successful responses populate the user query state.
+4. Guards route users to app or auth pages based on session presence.
+
+A special case is MFA: login can throw `MfaRequiredError` and route to the MFA page.

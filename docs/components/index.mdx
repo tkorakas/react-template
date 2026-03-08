@@ -1,0 +1,23 @@
+# Components
+
+Shared reusable components live under `src/common/ui` and are exported through `src/common/ui/index.ts`.
+
+## Component families
+
+- Layout: `AppLayout`, `AuthLayout`
+- Display: `Loading`
+- Data: `DataTable`, `Pagination`, `RowActionMenu`, `TableLoader`, `UserAvatar`
+- Feedback: `DialogProvider`, `Drawer`, `Toaster`, `useDialog`
+- Form container: `SimpleForm`
+- Form fields: `TextInput`, `Select`, `Combobox`, `RadioGroup`, `Checkbox`, `Switch`, `DateRangePicker`, `DateSelector`, `PinInput`, and more
+
+## Design goals
+
+- One consistent UI surface for features.
+- Reuse and composition instead of ad-hoc per-feature widgets.
+- Hide complex integration details (e.g. RHF controller wiring) inside shared components.
+
+## Related pages
+
+- [Form Components](/components/form-components)
+- [Data and Feedback Components](/components/data-and-feedback-components)

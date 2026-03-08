@@ -1,0 +1,37 @@
+# Architecture
+
+This project follows a feature-sliced approach with clear boundaries between rendering, business logic, and transport concerns.
+
+## High-level structure
+
+```text
+src/
+  common/
+    auth/
+    ui/
+    router.tsx
+    i18n.ts
+    query-client.ts
+    http-client.ts
+  data-access/
+    api.ts
+    api.schema.ts
+  features/
+    <feature>/
+      <feature>.page.tsx
+      <feature>.handler.ts
+      <feature>.schema.ts
+```
+
+## Key architecture rules
+
+- UI files render and wire components only.
+- Handler files own state, queries, mutations, and submit logic.
+- Schema files define Zod validation and exported types.
+- Features never call `httpClient` directly.
+- API parsing happens inside `data-access` before data reaches UI.
+
+## Related pages
+
+- [Feature Slice](/architecture/feature-slice)
+- [Layers and Data Flow](/architecture/layers-and-data-flow)

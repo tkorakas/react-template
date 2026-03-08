@@ -1,0 +1,29 @@
+# Lists
+
+List pages combine server data with local table state.
+
+## Core building blocks
+
+- Handler (`<feature>.handler.ts`) owns query state and filters.
+- Page (`<feature>.page.tsx`) renders controls, table, and pagination.
+- `DataTable` and `Pagination` come from `~/common/ui`.
+
+## Canonical example
+
+`src/features/team-members` demonstrates:
+
+- Server pagination (`page`, `limit`) via `getTeamMembers`.
+- Client-side filtering for search, status, role, and created date range.
+- Column definitions with translated headers.
+- Route nesting with a child create page.
+
+## Typical flow
+
+1. Query data with `useQuery` and stable query keys.
+2. Keep sorting/filter controls in handler state.
+3. Derive filtered rows in a memoized selector.
+4. Render table and pagination in page component.
+
+## Data-access contract
+
+List handlers should only call typed functions from `src/data-access/api.ts`; parsing and transport details remain outside feature code.

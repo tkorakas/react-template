@@ -1,0 +1,48 @@
+# React Template Documentation
+
+This documentation explains how this project is structured and how to extend it safely.
+
+## What this project is
+
+This repository is a production-ready React + TypeScript template focused on:
+
+- Authentication flows (login, register, MFA, OAuth callback).
+- Feature-oriented architecture with strict UI and logic separation.
+- Shared reusable UI primitives for forms, tables, and feedback.
+- Centralized API access with schema-based response parsing.
+- i18n-first UI copy and validation messages.
+
+## Quick links
+
+- [Introduction](/introduction)
+- [Architecture](/architecture/)
+- [Components](/components/)
+- [Auth](/auth/)
+- [Forms](/forms/)
+- [Lists](/lists/)
+- [AI](/ai/)
+
+## Tech stack
+
+- React 19
+- TypeScript (strict)
+- React Router v7
+- TanStack Query v5
+- React Hook Form + Zod
+- Chakra UI v3
+- Ky HTTP client
+- i18next
+
+## Local setup
+
+```bash
+pnpm install
+cp .env.dist .env
+pnpm run dev
+```
+
+To run docs locally:
+
+```bash
+pnpm docs:dev
+```

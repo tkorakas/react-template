@@ -1,0 +1,6 @@
+[build]
+  command = "pnpm docs:build"
+  publish = "doc_build"
+
+[build.environment]
+  NODE_VERSION = "22"
