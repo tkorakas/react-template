@@ -4,6 +4,8 @@
 
 `react-template` is a reusable frontend starter that demonstrates how to build maintainable product features with consistent patterns.
 
+Repository: https://github.com/tkorakas/react-template
+
 It is intentionally opinionated about:
 
 - Feature structure (`.page.tsx`, `.handler.ts`, `.schema.ts`).
