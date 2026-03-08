@@ -19,7 +19,24 @@ It is intentionally opinionated about:
 - pnpm
 - Mockoon for local API simulation
 
+## Create a project from this template
+
+```bash
+npx @tkorakas/create-react-template my-app
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+If npm metadata is delayed on your region/registry edge, use:
+
+```bash
+npx github:tkorakas/react-template my-app
+```
+
 ## Installation
+
+This section is for working on the template repository itself.
 
 ```bash
 pnpm install

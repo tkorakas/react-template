@@ -1,10 +1,12 @@
 {
-  "name": "react-template",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@tkorakas/create-react-template",
+  "version": "0.1.1",
   "type": "module",
   "bin": {
     "create-react-template": "./bin/create-react-template.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "vite",

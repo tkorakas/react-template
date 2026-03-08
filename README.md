@@ -16,12 +16,36 @@ A reusable React + TypeScript template focused on practical app scaffolding: aut
 
 ## Getting started
 
+### Create a new app from this template
+
+Use the published CLI:
+
+```bash
+npx @tkorakas/create-react-template my-app
+```
+
+Then run your new project:
+
+```bash
+cd my-app
+pnpm install
+pnpm run dev
+```
+
+If your network or registry cache is stale, you can use a GitHub fallback:
+
+```bash
+npx github:tkorakas/react-template my-app
+```
+
 ### Prerequisites
 
 - Node.js 20.19+ or 22.12+
 - pnpm
 
 ### Installation
+
+This section is for developing this repository itself.
 
 ```bash
 pnpm install
