@@ -48,6 +48,12 @@ features/{feature}/
 
 For single-page features at root level, use `*-page.tsx` (for example `home-page.tsx`).
 
+For list page workflows (table + pagination + route wiring + locale sync), use the `react-template-list-feature` skill.
+
+For form feature workflows (schema + handler + UI wiring + submit flow), use the `react-template-form-feature` skill.
+
+For endpoint integration workflows (schemas + api functions + mocks alignment), use the `react-template-data-access-endpoint` skill.
+
 ## File Naming
 
 - Use kebab-case for all files
@@ -60,8 +66,8 @@ For single-page features at root level, use `*-page.tsx` (for example `home-page
 ## Imports
 
 ```tsx
-import { getTeamMembers } from '~/data-access/api';
-import { DataTable, Pagination, Loading } from '~/common/ui';
+import { login } from '~/data-access/api';
+import { TextInput, SimpleForm, Loading } from '~/common/ui';
 import { useAuth } from '~/common/auth';
 import { httpClient } from '~/common/http-client';
 ```
@@ -85,19 +91,6 @@ Rules:
 - `use-handler.ts`: state, queries, mutations, navigation, submit handlers
 - Keep business logic out of UI files
 
-## Forms
-
-- Use React Hook Form + Zod resolver
-- Use UI form components from `~/common/ui` (`TextInput`, `Radio`, `SimpleForm`, etc.)
-- Always wire fields with `form.register(...)` and pass field errors
-
-## Table/List Pattern
-
-- Use `DataTable` and `Pagination` from `~/common/ui`
-- Keep table column definitions in handler (or split if a feature grows)
-- Server pagination comes from API (`page`, `limit`, `total`, `totalPages`)
-- Do not implement client-side pagination for server-driven lists
-
 ## Routing Rules
 
 - Configure routes in `src/common/router.tsx`
@@ -110,12 +103,6 @@ Rules:
 - Do not hardcode user-facing strings in feature UIs unless explicitly requested
 - Add/update translation keys under `public/locales/en` and `public/locales/el`
 - Use `useTranslation()` and feature namespaces (`team-members`, `login`, etc.)
-
-## Mock API Rules
-
-- Update `mocks/api.mockoon.json` when data-access endpoints change
-- Keep endpoint paths aligned with `httpClient` prefix `/api`
-- Keep response shapes aligned with parsers in `api.schema.ts`
 
 ## Verification
 
@@ -140,8 +127,3 @@ After making changes, run relevant checks before handoff:
 - Introduce new architectural patterns that conflict with current structure
 - Reintroduce removed routes/pages (for example About) unless requested
 - Leave stale translation keys or unused pages after structural changes
-
-Reference docs:
-
-- Zod: https://zod.dev/llms.txt
-- Chakra UI: https://chakra-ui.com/llms.txt
