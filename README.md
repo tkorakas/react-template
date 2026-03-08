@@ -1,233 +1,98 @@
 # React Template
 
-A comprehensive React TypeScript template built with Vite and modern development tools.
+A reusable React + TypeScript template focused on practical app scaffolding: auth flows (including OAuth callback support), forms, table primitives, routing, and API integration.
 
 ## Tech stack
 
-- Vite - Next generation frontend tooling
-- React 19 - Latest React with TypeScript support
-- Chakra UI - Modern component library
-- React Router - Declarative routing
-- TanStack Query - Powerful data fetching and caching
-- React Hook Form - Performant forms with minimal re-renders
-- Zod - TypeScript-first schema validation
-- Ky - Modern HTTP client based on fetch
-- pnpm - Fast, disk space efficient package manager
+- Vite
+- React 19
+- TypeScript
+- Chakra UI
+- React Router
+- TanStack Query
+- React Hook Form + Zod
+- Ky
+- pnpm
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
 - Node.js 20.19+ or 22.12+
-- pnpm (recommended) or npm
+- pnpm
 
 ### Installation
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Setup environment variables
 cp .env.dist .env
-# Edit .env with your actual GitHub OAuth credentials
-
-# Start development server
 pnpm run dev
-
-# Build for production
-pnpm run build
-
-# Preview production build
-pnpm run preview
 ```
 
-### Environment Setup
+In another terminal, run your API mock with Mockoon (see next section).
 
-1. **Copy the environment template:**
+## Mock API (Mockoon)
 
-   ```bash
-   cp .env.dist .env
-   ```
+This template uses Mockoon instead of a custom Node mock server.
 
-2. **Create a GitHub OAuth App:**
-   - Go to [GitHub Developer Settings](https://github.com/settings/applications/new)
-   - Create a new OAuth App with these settings:
-     - **Authorization callback URL**: `http://localhost:5173/oauth/github/callback`
-   - Copy the `Client ID` and `Client Secret`
+### Setup
 
-3. **Update your `.env` file:**
+1. Open Mockoon.
+2. Import `react-template-api.json`.
+3. Start the environment on port `3001`.
 
-   ```env
-   GITHUB_CLIENT_ID=your_actual_github_client_id
-   GITHUB_CLIENT_SECRET=your_actual_github_client_secret
-   ```
+Vite is configured to proxy `/api/*` to `http://localhost:3001`, so frontend requests work without CORS changes.
 
-4. **For production deployments:**
-   - Update `CLIENT_URL` in `.env` to your domain
-   - Update GitHub OAuth app callback URL to `https://yourdomain.com/oauth/github/callback`
+### Included endpoints
 
-## Project Structure
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/verify-mfa`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+- `GET /api/auth/oauth/:provider/authorize`
+- `POST /api/auth/oauth/:provider/callback`
+- `GET /api/todos`
+- `GET /api/team-members`
+- `POST /api/team-members`
 
-```
+## OAuth notes
+
+OAuth UI flow is kept in the template.
+
+- Login/Register pages include the OAuth button.
+- Callback route is `/oauth/:provider/callback`.
+- In Mockoon, the authorize endpoint returns a local callback URL with a mock code.
+
+For real OAuth provider integration, replace mock endpoints with your backend implementation.
+
+## Project structure
+
+```text
 src/
-├── ui/      # Reusable components
-│   ├── button.tsx
-│   └── index.ts
-├── features/        # Features, usually individual pages
-│   ├── login/
-│   │   ├── index.tsx        # Template
-│   │   └── use-handler.tsx  # View model
-│   └── register/
-│       ├── index.tsx        # Template
-│       └── use-handler.tsx  # View model
-├── router.tsx       # React Router configuration
-├── system.ts        # Chakra UI theme system
-└── main.tsx         # Entry point
+  common/
+    ui/             # Shared UI primitives
+      data/
+      display/
+      feedback/
+      form/
+      form-fields/
+      layout/
+  features/         # Feature pages and handlers
+  ui/               # Reserved for project-specific UI surface (.gitkeep)
 ```
 
-## Path Aliases
+## Scripts
 
-The project is configured with path aliases for cleaner imports:
+- `pnpm run dev` - start Vite dev server
+- `pnpm run build` - type-check and production build
+- `pnpm run test:run` - run tests once
+- `pnpm run lint` - run ESLint
 
-- `~/` → `src/` directory
+## Status highlights
 
-Example usage:
-
-```typescript
-// Instead of: import { Button } from '../../components/Button'
-import { Button } from '~/components';
-
-// Instead of: import { router } from './router'
-import { router } from '~/router';
-```
-
-## Mock Server
-
-This template includes a mock API server for development purposes:
-
-### Starting the Mock Server
-
-```bash
-# Start the mock server (runs on http://localhost:3001)
-pnpm run mock-server
-```
-
-### Available Endpoints
-
-- `GET /api/todos` - Get todos with pagination
-- `POST /api/todos` - Create a new todo
-- `PUT /api/todos/:id` - Update a todo
-- `DELETE /api/todos/:id` - Delete a todo
-
-The mock server uses an in-memory database and loads initial data from `mock-server/data/todos.json`.
-
-### Frontend Integration
-
-The Vite development server is configured with a proxy that automatically forwards `/api/*` requests to the mock server, eliminating CORS issues:
-
-```typescript
-// This request goes to http://localhost:3001/api/todos
-const response = await api.get('api/todos');
-```
-
-## Development
-
-### Starting Development
-
-1. Start the mock server:
-
-   ```bash
-   pnpm run mock-server
-   ```
-
-2. Start the frontend development server:
-
-   ```bash
-   pnpm run dev
-   ```
-
-3. Open http://localhost:5174 (or the port shown in terminal)
-
-or start all
-
-```bash
-  pnpm run dev:full
-```
-
-## Features
-
-The template includes example implementations of:
-
-- API data fetching with error handling and schema validation
-- Form validation with real-time feedback
-- Mock API server with TypeScript and Zod validation
-- Vite proxy configuration for seamless frontend-backend development
-
-### Implementation Status
-
-- [x] Router, forms, Http client, validation, UI library
-- [x] Linting & testing
-- [x] Mock server with Express and TypeScript
-- [x] Vite proxy configuration
-- [x] Auth flow
-- [x] Registration
-- [ ] Forgot password
-- [x] Email login
-- [x] OTP
-- [x] GitHub login
-- [x] LLM instructions
-- [x] Wire UI components with RHF
-- [ ] User settings
-- [ ] Edit/Create modal
-- [ ] Table with sorting and filtering
-- [x] Table
-  - [ ] Filtering
-  - [x] Sorting
-  - [x] Pagination
-  - [ ] Row selection
-  - [ ] Bulk actions
-- [ ] Roles & Permissions
-- [ ] User management
-- [x] Modals
-- [-] Create & Edit
-- [ ] Form components
-- [ ] File uploads
-- [ ] Multi-step form
-- [ ] Tabs with routing
-- [ ] Authenticator
-- [ ] Async jobs
-- [ ] Push notifications
-- [ ] Form components
-- [ ] 404 page
-- [ ] Make auth flow configurable
-- [ ] Charts
-- [x] CSRF
-- [x] Lazy loading on routes
-- [ ] Feature flags
-- [ ] Error monitoring
-- [x] Internationalization
-
-## Screenshots
-
-<details>
-<summary>View Screenshots</summary>
-
-### Authentication
-
-![Login](screenshots/login.png)
-
-![Register](screenshots/register.png)
-
-![MFA](screenshots/mfa.png)
-
-![MFA Filled](screenshots/mfa-filled.png)
-
-### Application
-
-![Home](screenshots/home.png)
-
-![Team Members](screenshots/team-members.png)
-
-![Create Team Member](screenshots/team-members-create.png)
-
-</details>
+- Auth flow (email/password + MFA + OAuth callback route)
+- Registration and login forms with validation
+- Shared table with sorting/filtering hooks
+- Team members demo (list/create)
+- i18n setup

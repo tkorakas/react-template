@@ -2,8 +2,8 @@
   "appName": "React App",
   "navigation": {
     "home": "Home",
-    "about": "About",
-    "teamMembers": "Team Members"
+    "teamMembers": "Team Members",
+    "advancedForm": "Advanced Form"
   },
   "actions": {
     "logout": "Logout",
@@ -22,5 +22,23 @@
   },
   "table": {
     "noResults": "No results found"
+  },
+  "datePicker": {
+    "placeholder": "Select date range",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "dayLabel": "{{date}}",
+    "rangeValue": "{{start}} - {{end}}"
+  },
+  "filters": {
+    "datePresets": {
+      "allTime": "All time",
+      "lastWeek": "Last week",
+      "last30Days": "Last 30 days",
+      "last3Months": "Last 3 months",
+      "last6Months": "Last 6 months",
+      "last12Months": "Last 12 months",
+      "custom": "Custom"
+    }
   }
 }

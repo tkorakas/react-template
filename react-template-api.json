@@ -1,0 +1,454 @@
+{
+  "uuid": "8cb7e7bc-3914-4f43-99b7-f00f7ea0d4b8",
+  "lastMigration": 33,
+  "name": "react-template-api",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [
+    {
+      "uuid": "9a703fd8-e94d-4ce7-b0d0-cdb6b63a6d39",
+      "name": "Auth",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "f7f71195-8a95-44cc-a4be-2bdc8578bf77"
+        },
+        {
+          "type": "route",
+          "uuid": "4f86eaf8-2b5d-4cf2-b6d0-d148f5f4d96a"
+        },
+        {
+          "type": "route",
+          "uuid": "14ea2ffb-b1f6-4c65-af2d-8075d8469abc"
+        },
+        {
+          "type": "route",
+          "uuid": "97277fc6-c148-4f75-aa57-18b0e5759348"
+        },
+        {
+          "type": "route",
+          "uuid": "f3fa9f4f-2f1a-4b44-a9f2-dbbf75effc12"
+        },
+        {
+          "type": "route",
+          "uuid": "d9d72dc7-f6dc-45b4-9411-58143a08be8b"
+        },
+        {
+          "type": "route",
+          "uuid": "f582f89d-4cea-4e6e-a78f-592a5606404d"
+        }
+      ]
+    },
+    {
+      "uuid": "674d9cae-30df-4c1a-af10-2418ef9c8579",
+      "name": "Demo",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "e3f1d1d5-b692-4f2d-a31c-9f46f66f6de5"
+        },
+        {
+          "type": "route",
+          "uuid": "ab4aab8c-a29a-430f-8ff9-3312238f1588"
+        },
+        {
+          "type": "route",
+          "uuid": "d5665040-3593-41e3-8eec-b29823ce27f6"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "uuid": "f7f71195-8a95-44cc-a4be-2bdc8578bf77",
+      "type": "http",
+      "documentation": "Register",
+      "method": "post",
+      "endpoint": "api/auth/register",
+      "responses": [
+        {
+          "uuid": "840ddf4c-9a6f-4fa2-a03e-9c3fcf57f86c",
+          "body": "{\n  \"id\": \"u_100\",\n  \"name\": \"Template User\",\n  \"email\": \"new.user@example.com\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Set-Cookie",
+              "value": "connected=1; Path=/"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4f86eaf8-2b5d-4cf2-b6d0-d148f5f4d96a",
+      "type": "http",
+      "documentation": "Login",
+      "method": "post",
+      "endpoint": "api/auth/login",
+      "responses": [
+        {
+          "uuid": "42790733-6a26-4b62-82cb-3297e5a3db84",
+          "body": "{\n  \"error\": \"MFA verification required\"\n}",
+          "latency": 0,
+          "statusCode": 409,
+          "label": "MFA required",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "mfa@example.com",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "5889ed0f-89f4-4cdf-93dc-73a2c3c09f5a",
+          "body": "{\n  \"id\": \"u_100\",\n  \"name\": \"Template User\",\n  \"email\": \"user@example.com\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Login success",
+          "headers": [
+            {
+              "key": "Set-Cookie",
+              "value": "connected=1; Path=/"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "14ea2ffb-b1f6-4c65-af2d-8075d8469abc",
+      "type": "http",
+      "documentation": "Verify MFA",
+      "method": "post",
+      "endpoint": "api/auth/verify-mfa",
+      "responses": [
+        {
+          "uuid": "7e25fb4c-f09c-4b2b-8e39-68dd58c23026",
+          "body": "{\n  \"result\": true\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Set-Cookie",
+              "value": "connected=1; Path=/"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "97277fc6-c148-4f75-aa57-18b0e5759348",
+      "type": "http",
+      "documentation": "Current user",
+      "method": "get",
+      "endpoint": "api/auth/me",
+      "responses": [
+        {
+          "uuid": "d4e3de9c-af77-4a7e-bf3e-3878f635f8fd",
+          "body": "{\n  \"id\": \"u_100\",\n  \"name\": \"Template User\",\n  \"email\": \"user@example.com\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Authenticated",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "cookie",
+              "modifier": "connected",
+              "value": "1",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "fc671f02-5bdb-4f7e-b050-65fd75f931c8",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Unauthenticated",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "f3fa9f4f-2f1a-4b44-a9f2-dbbf75effc12",
+      "type": "http",
+      "documentation": "Logout",
+      "method": "post",
+      "endpoint": "api/auth/logout",
+      "responses": [
+        {
+          "uuid": "f5b09087-eb16-402d-8dd0-03fa8b22ae3a",
+          "body": "{\n  \"result\": true\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Set-Cookie",
+              "value": "connected=; Path=/; Max-Age=0"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "d9d72dc7-f6dc-45b4-9411-58143a08be8b",
+      "type": "http",
+      "documentation": "OAuth authorize",
+      "method": "get",
+      "endpoint": "api/auth/oauth/:provider/authorize",
+      "responses": [
+        {
+          "uuid": "e5a76ead-95e4-4de6-b442-d2117fb53f0c",
+          "body": "{\n  \"authUrl\": \"http://localhost:5173/oauth/github/callback?code=mock_oauth_code\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "f582f89d-4cea-4e6e-a78f-592a5606404d",
+      "type": "http",
+      "documentation": "OAuth callback",
+      "method": "post",
+      "endpoint": "api/auth/oauth/:provider/callback",
+      "responses": [
+        {
+          "uuid": "90f8e78d-df5e-4959-bd4f-d722ece33457",
+          "body": "{\n  \"id\": \"u_200\",\n  \"name\": \"GitHub User\",\n  \"email\": \"github.user@example.com\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Set-Cookie",
+              "value": "connected=1; Path=/"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "e3f1d1d5-b692-4f2d-a31c-9f46f66f6de5",
+      "type": "http",
+      "documentation": "Todos",
+      "method": "get",
+      "endpoint": "api/todos",
+      "responses": [
+        {
+          "uuid": "d6e96f32-e761-4b35-a251-9f68a13a7130",
+          "body": "{\n  \"data\": [\n    { \"id\": 1, \"title\": \"Wire app shell\", \"completed\": true },\n    { \"id\": 2, \"title\": \"Implement login flow\", \"completed\": true },\n    { \"id\": 3, \"title\": \"Add team members page\", \"completed\": false }\n  ],\n  \"page\": 1,\n  \"limit\": 5,\n  \"total\": 3,\n  \"totalPages\": 1\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ab4aab8c-a29a-430f-8ff9-3312238f1588",
+      "type": "http",
+      "documentation": "Team members listing",
+      "method": "get",
+      "endpoint": "api/team-members",
+      "responses": [
+        {
+          "uuid": "f64a7f16-8bd7-4455-a0f5-37d4590b6395",
+          "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Thanos Korakas\",\n      \"role\": \"Admin\",\n      \"status\": \"Active\",\n      \"createdAt\": \"2026-01-01T08:00:00.000Z\",\n      \"updatedAt\": \"2026-01-01T08:00:00.000Z\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Alex Doe\",\n      \"role\": \"Developer\",\n      \"status\": \"Pending\",\n      \"createdAt\": \"2026-01-02T08:00:00.000Z\",\n      \"updatedAt\": \"2026-01-02T08:00:00.000Z\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Maria Smith\",\n      \"role\": \"Designer\",\n      \"status\": \"Inactive\",\n      \"createdAt\": \"2026-01-03T08:00:00.000Z\",\n      \"updatedAt\": \"2026-01-03T08:00:00.000Z\"\n    }\n  ],\n  \"page\": 1,\n  \"limit\": 5,\n  \"total\": 3,\n  \"totalPages\": 1\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "d5665040-3593-41e3-8eec-b29823ce27f6",
+      "type": "http",
+      "documentation": "Create team member",
+      "method": "post",
+      "endpoint": "api/team-members",
+      "responses": [
+        {
+          "uuid": "0f12fbf3-2c4b-4414-b3f9-90bf0f35a7d5",
+          "body": "{\n  \"id\": 4,\n  \"name\": \"New Member\",\n  \"role\": \"Analyst\",\n  \"status\": \"Active\",\n  \"createdAt\": \"2026-01-04T08:00:00.000Z\",\n  \"updatedAt\": \"2026-01-04T08:00:00.000Z\"\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ]
+}

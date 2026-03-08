@@ -35,11 +35,7 @@ export default [
       sourceType: 'module',
       parser: tseslint.parser,
       parserOptions: {
-        project: [
-          './tsconfig.app.json',
-          './tsconfig.node.json',
-          './mock-server/tsconfig.json',
-        ],
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true,
@@ -102,24 +98,6 @@ export default [
       'import/resolver': {
         typescript: {},
       },
-    },
-  },
-  // Mock server specific rules
-  {
-    files: ['mock-server/**/*.{js,ts}'],
-    rules: {
-      'no-console': 'off', // Allow console statements in server code
-      'no-unused-vars': 'off', // Turn off base rule for TypeScript
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          destructuredArrayIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-          ignoreRestSiblings: true, // Ignore unused rest siblings in destructuring
-        },
-      ],
     },
   },
   prettier, // Must be last to override other configs

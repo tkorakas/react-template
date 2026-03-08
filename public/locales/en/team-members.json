@@ -11,6 +11,15 @@
     "pending": "Pending",
     "inactive": "Inactive"
   },
+  "filters": {
+    "role": "Role",
+    "status": "Status",
+    "createdPreset": "Created date preset",
+    "anyRole": "Any role",
+    "anyStatus": "Any status",
+    "anyDate": "Any date",
+    "clear": "Clear filters"
+  },
   "create": {
     "title": "Create Team Member",
     "addButton": "Add Team Member",

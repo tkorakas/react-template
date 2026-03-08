@@ -8,7 +8,7 @@ import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { handleApiFieldErrors } from '~/common/errors';
 import { queryClient } from '~/common/query-client';
 import { register } from '~/data-access/api';
-import { toaster } from '~/ui';
+import { toaster } from '~/common/ui';
 import { registerSchema, type RegisterFormData } from './schema';
 
 export function useRegisterHandler() {

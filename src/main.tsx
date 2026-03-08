@@ -10,7 +10,7 @@ import '~/common/i18n';
 import { queryClient } from '~/common/query-client';
 import { router } from '~/common/router';
 import { system } from '~/common/system';
-import { Loading, Toaster } from '~/ui';
+import { DialogProvider, Loading, Toaster } from '~/common/ui';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
@@ -20,9 +20,11 @@ createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>
       <ChakraProvider value={system}>
         <Suspense fallback={<Loading />}>
-          <AuthManager>
-            <RouterProvider router={router} />
-          </AuthManager>
+          <DialogProvider>
+            <AuthManager>
+              <RouterProvider router={router} />
+            </AuthManager>
+          </DialogProvider>
         </Suspense>
         <Toaster />
       </ChakraProvider>

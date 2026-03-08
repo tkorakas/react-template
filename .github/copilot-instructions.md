@@ -1,173 +1,147 @@
-# React Template - Copilot Instructions
+# Copilot Instructions
 
-## Core Rules for Code Generation
+## Tech Stack
 
-- ALL file names must be kebab-case: `use-handler.ts`, `auth-manager.tsx`
-- NEVER add comments in code files
-- Features use `index.tsx` + `use-handler.ts` pattern
-- Centralized `data-access/` folder for ALL API calls
-- Use path aliases with `~` prefix for imports
+React 19, TypeScript strict, TanStack Query v5, React Hook Form + Zod, Chakra UI v3, React Router v7, Ky HTTP client, i18next
 
 ## Project Structure
 
 ```
 src/
 ├── common/
-│   ├── auth/            # Authentication system (useAuth hook, route guards)
-│   ├── http-client.ts   # Shared HTTP client with auth hooks
-│   ├── query-client.ts  # Centralized TanStack Query client
-│   ├── router.tsx       # Route configuration
-│   └── system.ts        # Chakra UI design system
-├── data-access/         # ALL API calls go here (centralized)
-├── features/           # Feature-based organization
-├── ui/                # Shared UI components only
-└── main.tsx           # Application entry point
+│   ├── auth/        # Authentication manager, guards, auth hooks
+│   ├── ui/          # Shared reusable UI components (layout, form, table, feedback)
+│   ├── router.tsx   # Route configuration
+│   ├── system.ts    # Chakra system config
+│   ├── i18n.ts      # i18n setup and namespaces
+│   ├── query-client.ts
+│   └── http-client.ts
+├── data-access/
+│   ├── api.ts       # API functions (public)
+│   └── api.schema.ts # INTERNAL parsing/validation schemas
+├── features/        # Route features and subfeatures
+│   ├── home-page.tsx
+│   ├── login/
+│   ├── register/
+│   ├── mfa/
+│   ├── oauth/
+│   └── team-members/
+└── main.tsx
+
+public/
+└── locales/{en,el}/*.json  # i18n namespaces
+
+mocks/
+└── api.mockoon.json         # Mockoon environment for API simulation
 ```
 
-## Feature Architecture Pattern
+## Feature Pattern
 
-Every feature follows this exact structure:
+For feature folders (for example `login`, `register`, `mfa`, `team-members/create`):
 
 ```
-features/feature-name/
-├── index.tsx          # UI component only - imports handler
-├── use-handler.ts     # Business logic only - all state/API logic
-└── schema.ts          # Zod validation schemas
+features/{feature}/
+├── index.tsx       # UI layer
+├── use-handler.ts  # Logic layer
+└── schema.ts       # Zod form schema
 ```
 
-## Template for New Features
+For single-page features at root level, use `*-page.tsx` (for example `home-page.tsx`).
 
-### index.tsx Template
+## File Naming
+
+- Use kebab-case for all files
+- Keep existing conventions:
+  - `index.tsx` for folder entry pages/components
+  - `use-handler.ts` for feature logic
+  - `schema.ts` for feature validation schemas
+  - `*-page.tsx` for standalone route pages
+
+## Imports
 
 ```tsx
-import { useFeatureHandler } from './use-handler';
-
-export default function FeaturePage() {
-  const { data, handleAction, isLoading } = useFeatureHandler();
-  return <div>{/* UI JSX only */}</div>;
-}
-```
-
-### use-handler.ts Template
-
-```tsx
-import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
-import { getFeatures, createFeature } from '~/data-access/api';
-import { schema } from './schema';
-
-export function useFeatureHandler() {
-  const navigate = useNavigate();
-  const form = useForm({ resolver: zodResolver(schema) });
-
-  const query = useQuery({
-    queryKey: ['feature'],
-    queryFn: getFeatures,
-    select: data => data.items,
-    staleTime: Infinity,
-  });
-
-  const mutation = useMutation({
-    mutationFn: createFeature,
-    onSuccess: () => navigate('/success'),
-  });
-
-  return {
-    form,
-    data: query.data,
-    isLoading: query.isPending || mutation.isPending,
-    handleSubmit: form.handleSubmit(mutation.mutate),
-  };
-}
-```
-
-## Data Access Pattern
-
-ALL API calls must go in `src/data-access/api.ts`:
-
-```tsx
+import { getTeamMembers } from '~/data-access/api';
+import { DataTable, Pagination, Loading } from '~/common/ui';
+import { useAuth } from '~/common/auth';
 import { httpClient } from '~/common/http-client';
-
-export const getFeatures = async () => httpClient.get('features').json();
-export const createFeature = async data =>
-  httpClient.post('features', { json: data }).json();
-export const updateFeature = async (id, data) =>
-  httpClient.put(`features/${id}`, { json: data }).json();
-export const deleteFeature = async id =>
-  httpClient.delete(`features/${id}`).json();
 ```
 
-## Technology Stack Integration
+Rules:
 
-- **React 19** + TypeScript strict mode
-- **TanStack Query v5** - No retries globally, infinite stale time
-- **React Hook Form** + Zod validation for all forms
-- **Chakra UI v3** - Use components, not custom CSS
-- **React Router v7** - Client-side navigation
-- **Ky HTTP client** - All API requests via shared `httpClient` from `~/http-client`
+- Use `~/` alias imports
+- Import API functions from `~/data-access/api`
+- Do not import from deep UI internals when `~/common/ui` exports what you need
 
-## Authentication System
+## Data Access Rules
 
-- Use `useAuth` from `~/common/auth/use-auth`
-- `AuthManager` component handles loading states
-- `PrivateRoute`/`PublicRoute` for route protection
-- File-based session storage (not in-memory)
-- HTTP client has auth hooks for 401 handling (auto-clears user cache)
+- Keep API calls centralized in `src/data-access/api.ts`
+- Keep Zod schemas/parsers internal in `src/data-access/api.schema.ts`
+- Parse API responses in data-access before returning to features
+- Do not make direct API calls from feature components/handlers
 
-## Query Client Configuration
+## UI + Handler Separation
 
-```tsx
-import { queryClient } from '~/common/query-client';
-```
+- `index.tsx`: rendering and wiring only
+- `use-handler.ts`: state, queries, mutations, navigation, submit handlers
+- Keep business logic out of UI files
 
-## Standard Query Patterns
+## Forms
 
-```tsx
-const { data, isPending } = useQuery({
-  queryKey: ['resource'],
-  queryFn: resourceApi.getAll,
-  select: data => data.items,
-  staleTime: Infinity,
-});
+- Use React Hook Form + Zod resolver
+- Use UI form components from `~/common/ui` (`TextInput`, `Radio`, `SimpleForm`, etc.)
+- Always wire fields with `form.register(...)` and pass field errors
 
-const mutation = useMutation({
-  mutationFn: resourceApi.create,
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['resource'] });
-    navigate('/success');
-  },
-});
-```
+## Table/List Pattern
 
-## Naming Conventions
+- Use `DataTable` and `Pagination` from `~/common/ui`
+- Keep table column definitions in handler (or split if a feature grows)
+- Server pagination comes from API (`page`, `limit`, `total`, `totalPages`)
+- Do not implement client-side pagination for server-driven lists
 
-- **Files**: kebab-case (`use-handler.ts`, `private-route.tsx`)
-- **Components**: PascalCase (`AuthManager`, `PrivateRoute`)
-- **Functions/Hooks**: camelCase (`useAuth`, `getCurrentUser`)
-- **Constants**: SCREAMING_SNAKE_CASE (`USER_QUERY_KEY`)
+## Routing Rules
 
-## Strict Rules - Never Do
+- Configure routes in `src/common/router.tsx`
+- Private app routes are nested under `PrivateRoute` + `AppLayout`
+- Public auth routes are nested under `PublicRoute` + `AuthLayout`
+- Keep route pages lazy-loaded via `withSuspense(...)`
 
-- Add comments in code files
-- Put business logic in index.tsx files
-- Put UI logic in use-handler.ts files
-- Make direct API calls from components
-- Use PascalCase for file names
-- Create separate data-access folders per feature
-- Generate documentation files (README.md, ARCHITECTURE.md, etc.)
-- Dont create barrel files
+## i18n Rules
 
-## Strict Rules - Always Do
+- Do not hardcode user-facing strings in feature UIs unless explicitly requested
+- Add/update translation keys under `public/locales/en` and `public/locales/el`
+- Use `useTranslation()` and feature namespaces (`team-members`, `login`, etc.)
 
-- Separate UI (index.tsx) from logic (use-handler.ts)
-- Use kebab-case for all file names
-- Centralize ALL API calls in src/data-access/
-- Use TypeScript strict mode
-- Export default component from index.tsx
-- Return object with named properties from handlers
-- Use path aliases with ~ prefix
+## Mock API Rules
 
-Zod instructions https://zod.dev/llms.txt
-Chakra instructions https://chakra-ui.com/llms.txt
+- Update `mocks/api.mockoon.json` when data-access endpoints change
+- Keep endpoint paths aligned with `httpClient` prefix `/api`
+- Keep response shapes aligned with parsers in `api.schema.ts`
+
+## Verification
+
+After making changes, run relevant checks before handoff:
+
+- `pnpm type-check`
+- `pnpm build` for route/UI/build-affecting work
+
+## Do / Don't
+
+**Do:**
+
+- Keep UI and logic separated
+- Keep API access centralized in `data-access`
+- Use reusable UI from `~/common/ui`
+- Follow existing naming and structure patterns
+- Keep locale files in sync when changing navigation or labels
+
+**Don't:**
+
+- Add comments in code unless necessary
+- Introduce new architectural patterns that conflict with current structure
+- Reintroduce removed routes/pages (for example About) unless requested
+- Leave stale translation keys or unused pages after structural changes
+
+Reference docs:
+
+- Zod: https://zod.dev/llms.txt
+- Chakra UI: https://chakra-ui.com/llms.txt

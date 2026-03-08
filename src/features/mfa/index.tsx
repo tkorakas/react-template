@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { SimpleForm, TextInput } from '~/ui';
+import { SimpleForm, TextInput } from '~/common/ui';
 import { useMfaHandler } from './use-handler';
 
 export default function MfaPage() {

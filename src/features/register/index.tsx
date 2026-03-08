@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { OAuthButton } from '~/common/auth';
-import { SimpleForm, TextInput } from '~/ui';
+import { SimpleForm, TextInput } from '~/common/ui';
 import { useRegisterHandler } from './use-handler';
 
 export default function RegisterPage() {

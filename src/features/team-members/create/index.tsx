@@ -1,6 +1,6 @@
 import { Button, Stack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { Drawer, Radio, SimpleForm, TextInput } from '~/ui';
+import { Drawer, Radio, SimpleForm, TextInput } from '~/common/ui';
 import { useCreateTeamMemberHandler } from './use-handler';
 
 export default function CreateTeamMemberPage() {

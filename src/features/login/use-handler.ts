@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/common/auth/use-auth';
 import { MfaRequiredError, handleApiFieldErrors } from '~/common/errors';
 import { login } from '~/data-access/api';
-import { toaster } from '~/ui';
+import { toaster } from '~/common/ui';
 import { loginSchema, type LoginFormData } from './schema';
 
 export function useLoginHandler() {
