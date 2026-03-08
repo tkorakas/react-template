@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/common/auth/use-auth';
 import { MfaRequiredError, handleApiFieldErrors } from '~/common/errors';
-import { login } from '~/data-access/api';
+import { login } from '~/data-access/auth/auth.api';
 import { toaster } from '~/common/ui';
 import { loginSchema, type LoginFormData } from './login.schema';
 

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '~/common/auth';
-import { oauthCallback } from '~/data-access/api';
+import { oauthCallback } from '~/data-access/auth/auth.api';
 
 export function useOAuthHandler() {
   const navigate = useNavigate();

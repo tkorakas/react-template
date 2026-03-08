@@ -4,12 +4,19 @@
 
 `DataTable` and `Pagination` are the foundation for list pages.
 
+For table-heavy pages, use shared table helpers from `~/common/ui/table`:
+
+- `useTableState` for URL query sync (`filters`, `page`, `limit`, `sorting`, and row selection).
+- `FiltersPanel` for compact, popover-based filter controls.
+- `TableChipFilter` for quick toggle filters (status/date presets).
+- `TableActionBar` for bulk actions on selected rows.
+
 Typical handler responsibilities:
 
-- Declare `ColumnDef[]` with translated headers.
-- Maintain sorting and filter state.
+- Define columns in a dedicated `<feature>.column.ts` hook.
+- Maintain sorting/filter/page state with `useTableState`.
 - Query paginated data from `data-access`.
-- Derive client-side filtered rows.
+- Derive client-side filtered rows when filters are not server-driven.
 
 Example columns pattern:
 

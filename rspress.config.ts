@@ -12,7 +12,7 @@ export default defineConfig({
       { text: 'Components', link: '/components/' },
       { text: 'Auth', link: '/auth/' },
       { text: 'Forms', link: '/forms/' },
-      { text: 'Lists', link: '/lists/' },
+      { text: 'Tables', link: '/tables/' },
       { text: 'AI', link: '/ai/' },
     ],
     sidebar: {
@@ -57,10 +57,10 @@ export default defineConfig({
           items: [{ text: 'Overview', link: '/forms/' }],
         },
       ],
-      '/lists/': [
+      '/tables/': [
         {
-          text: 'Lists',
-          items: [{ text: 'Overview', link: '/lists/' }],
+          text: 'Tables',
+          items: [{ text: 'Overview', link: '/tables/' }],
         },
       ],
       '/ai/': [

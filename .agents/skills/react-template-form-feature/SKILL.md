@@ -13,7 +13,7 @@ A complete form feature aligned with this repository pattern, from basic auth fo
 - `src/features/<feature>/<feature>.page.tsx`: rendering and field wiring only
 - `src/features/<feature>/<feature>.handler.ts`: form state, options, mutation, submit flow, navigation/toast behavior
 - `src/features/<feature>/<feature>.schema.ts`: Zod schema and inferred form type
-- `src/data-access/api.ts` (+ `api.schema.ts` when needed): centralized API integration
+- `src/data-access/<feature>/<feature>.api.ts` (+ `<feature>.schema.ts` when needed): centralized API integration
 - `public/locales/en/<namespace>.json` and `public/locales/el/<namespace>.json`: user-facing labels and validation messages when copy changes
 
 Use `src/features/advanced-form/*` as the baseline for shared field wiring and structure.
@@ -67,7 +67,7 @@ Choose components from `~/common/ui` and wire as follows:
 - Create `useForm` with `zodResolver(schema)` and explicit `defaultValues`.
 - Keep options arrays in handler for UI consumption.
 - Wire submit with `useMutation` from TanStack Query.
-- Use API function(s) from `~/data-access/api`.
+- Use API function(s) from feature-specific modules (for example `~/data-access/auth/auth.api`).
 - Handle known API field errors via existing project helpers when available.
 - Return only what UI needs: `form`, `handleSubmit`, loading state, options.
 - Use `toaster` and navigation in mutation callbacks when required.
@@ -82,7 +82,7 @@ Choose components from `~/common/ui` and wire as follows:
 
 4. Data Access Integration
 
-- Add/update submit endpoint in `src/data-access/api.ts`.
+- Add/update submit endpoint in `src/data-access/<feature>/<feature>.api.ts`.
 - Parse API responses in data-access before returning, using schema parsers.
 - Do not call `httpClient` directly in feature files.
 
@@ -127,7 +127,7 @@ Choose components from `~/common/ui` and wire as follows:
 - `<feature>.handler.ts` owns form state and submit logic.
 - `<feature>.page.tsx` only renders/wires fields and actions.
 - Shared fields from `~/common/ui` are used with correct wiring pattern.
-- API submission happens via `src/data-access/api.ts`.
+- API submission happens via `src/data-access/<feature>/<feature>.api.ts`.
 - Locale keys updated in both `en` and `el` if user-facing copy changed.
 - `pnpm type-check` passes.
 - `pnpm build` passes when route/UI changed.

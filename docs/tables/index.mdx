@@ -1,12 +1,14 @@
-# Lists
+# Tables
 
-List pages combine server data with local table state.
+Table pages combine server data with URL-synced table state.
 
 ## Core building blocks
 
 - Handler (`<feature>.handler.ts`) owns query state and filters.
 - Page (`<feature>.page.tsx`) renders controls, table, and pagination.
+- Columns (`<feature>.column.ts`) define table columns and cell rendering.
 - `DataTable` and `Pagination` come from `~/common/ui`.
+- `useTableState`, `FiltersPanel`, and `TableChipFilter` are the default table helpers.
 
 ## Canonical example
 
@@ -20,10 +22,10 @@ List pages combine server data with local table state.
 ## Typical flow
 
 1. Query data with `useQuery` and stable query keys.
-2. Keep sorting/filter controls in handler state.
-3. Derive filtered rows in a memoized selector.
+2. Keep sorting/filter/page state in `useTableState`.
+3. Derive filtered rows in a memoized selector when filtering is client-side.
 4. Render table and pagination in page component.
 
 ## Data-access contract
 
-List handlers should only call typed functions from `src/data-access/api.ts`; parsing and transport details remain outside feature code.
+List handlers should only call typed functions from feature-specific data-access modules; parsing and transport details remain outside feature code.

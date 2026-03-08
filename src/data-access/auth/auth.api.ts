@@ -5,13 +5,11 @@ import type {
   CurrentUserResponse,
   LoginRequest,
   RegisterRequest,
-  TeamMembersResponse,
-} from './api.schema';
+} from './auth.schema';
 import {
-  currentUserResponseSchema,
-  teamMembersResponseSchema,
-  userResponseSchema,
-} from './api.schema';
+  authCurrentUserResponseSchema,
+  authUserResponseSchema,
+} from './auth.schema';
 
 export const register = async (userData: RegisterRequest) => {
   const response = await httpClient.post('auth/register', {
@@ -19,7 +17,7 @@ export const register = async (userData: RegisterRequest) => {
   });
 
   const data = await response.json();
-  return userResponseSchema.parse(data);
+  return authUserResponseSchema.parse(data);
 };
 
 export const login = async (credentials: LoginRequest) => {
@@ -29,7 +27,7 @@ export const login = async (credentials: LoginRequest) => {
     });
 
     const data = await response.json();
-    return userResponseSchema.parse(data);
+    return authUserResponseSchema.parse(data);
   } catch (error) {
     if (error instanceof HTTPError && error.response.status === 409) {
       throw new MfaRequiredError();
@@ -50,7 +48,7 @@ export const verifyMfa = async (otp: string) => {
 export const getCurrentUser = async (): Promise<CurrentUserResponse> => {
   const response = await httpClient.get('auth/me');
   const data = await response.json();
-  return currentUserResponseSchema.parse(data);
+  return authCurrentUserResponseSchema.parse(data);
 };
 
 export const logout = async (): Promise<void> => {
@@ -69,25 +67,5 @@ export const oauthCallback = async (provider: string, code: string) => {
   });
 
   const data = await response.json();
-  return userResponseSchema.parse(data);
-};
-
-export const getTeamMembers = async (
-  page = 1,
-  limit = 10
-): Promise<TeamMembersResponse> => {
-  const response = await httpClient.get(
-    `team-members?page=${page}&limit=${limit}`
-  );
-  const data = await response.json();
-  return teamMembersResponseSchema.parse(data);
-};
-
-export const createTeamMember = async (data: {
-  name: string;
-  role: string;
-  status: 'Active' | 'Pending' | 'Inactive';
-}) => {
-  const response = await httpClient.post('team-members', { json: data });
-  return response.json();
+  return authUserResponseSchema.parse(data);
 };

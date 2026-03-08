@@ -9,7 +9,7 @@ Repository: https://github.com/tkorakas/react-template
 It is intentionally opinionated about:
 
 - Feature structure (`.page.tsx`, `.handler.ts`, `.schema.ts`).
-- API boundaries (all calls in `src/data-access/api.ts`).
+- API boundaries (all calls in `src/data-access/<feature>/<feature>.api.ts`).
 - Shared UI primitives under `src/common/ui`.
 - Route guard and layout composition.
 

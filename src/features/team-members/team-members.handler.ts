@@ -1,48 +1,86 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getTeamMembers } from '~/data-access/api';
-import type { ColumnDef, SortingState } from '~/common/ui';
+import { useMemo } from 'react';
+import { hasActiveFilters, useTableState } from '~/common/ui';
+import { getTeamMembers } from '~/data-access/team-members/team-members.api';
+import { useTeamMembersColumns } from './team-members.column';
 
-type TeamMember = {
-  id: number;
-  name: string;
-  role: string;
-  status: 'Active' | 'Pending' | 'Inactive';
+const TEAM_MEMBERS_DEFAULT_FILTERS = {
+  search: '',
+  status: '',
+  role: '',
+  startDate: '',
+  endDate: '',
 };
 
 export function useTeamMembersHandler() {
-  const { t } = useTranslation('team-members');
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [roleFilter, setRoleFilter] = useState('');
-  const [createdPreset, setCreatedPreset] = useState('');
-  const [createdRange, setCreatedRange] = useState<{
-    startDate?: string;
-    endDate?: string;
-  }>({});
-  const [page, setPage] = useState(1);
-  const limit = 5;
+  const {
+    filters,
+    page,
+    limit,
+    sorting,
+    setSorting,
+    setPage,
+    setFilters,
+    rowSelection,
+    setRowSelection,
+  } = useTableState({
+    filters: TEAM_MEMBERS_DEFAULT_FILTERS,
+    limit: 5,
+    preserveEmptyFilterKeys: ['search'],
+  });
+  const columns = useTeamMembersColumns();
 
-  const columns: ColumnDef<TeamMember>[] = useMemo(
-    () => [
-      { accessorKey: 'name', header: t('columns.name') },
-      { accessorKey: 'role', header: t('columns.role') },
-      { accessorKey: 'status', header: t('columns.status') },
-    ],
-    [t]
-  );
+  const setSearchFilter = (search: string) => {
+    setFilters({ ...filters, search });
+  };
+
+  const setStatusFilter = (status: string) => {
+    setFilters({ ...filters, status });
+  };
+
+  const setRoleFilter = (role: string) => {
+    setFilters({ ...filters, role });
+  };
+
+  const setCreatedRange = (value: { startDate?: string; endDate?: string }) => {
+    setFilters({
+      ...filters,
+      startDate: value.startDate ?? '',
+      endDate: value.endDate ?? '',
+    });
+  };
+
+  const clearFilters = () => {
+    setFilters(TEAM_MEMBERS_DEFAULT_FILTERS);
+  };
+
+  const hasFilters = hasActiveFilters({
+    status: filters.status,
+    role: filters.role,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+  });
+
+  const createdRange = {
+    startDate: filters.startDate || undefined,
+    endDate: filters.endDate || undefined,
+  };
+
+  const globalFilter = filters.search;
+
+  const statusFilter = filters.status;
+
+  const roleFilter = filters.role;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['team-members', page],
+    queryKey: ['team-members', page, limit],
     queryFn: () => getTeamMembers(page, limit),
   });
 
   const filteredData = useMemo(() => {
-    const term = globalFilter.trim().toLowerCase();
-    const startDate = createdRange.startDate;
-    const endDate = createdRange.endDate;
+    const term = filters.search.trim().toLowerCase();
+    const startDate = filters.startDate;
+    const endDate = filters.endDate;
 
     return (data?.data ?? []).filter(member => {
       const matchesSearch =
@@ -50,10 +88,11 @@ export function useTeamMembersHandler() {
         member.name.toLowerCase().includes(term) ||
         member.role.toLowerCase().includes(term);
 
-      const matchesStatus = !statusFilter || member.status === statusFilter;
+      const matchesStatus = !filters.status || member.status === filters.status;
 
       const matchesRole =
-        !roleFilter || member.role.toLowerCase() === roleFilter.toLowerCase();
+        !filters.role ||
+        member.role.toLowerCase() === filters.role.toLowerCase();
 
       const createdDay = member.createdAt.slice(0, 10);
       const matchesDate =
@@ -62,7 +101,7 @@ export function useTeamMembersHandler() {
 
       return matchesSearch && matchesStatus && matchesRole && matchesDate;
     });
-  }, [data?.data, globalFilter, statusFilter, roleFilter, createdRange]);
+  }, [data?.data, filters]);
 
   const roleOptions = useMemo(() => {
     const roles = Array.from(
@@ -71,34 +110,19 @@ export function useTeamMembersHandler() {
     return roles.map(role => ({ label: role, value: role }));
   }, [data?.data]);
 
-  const clearFilters = () => {
-    setStatusFilter('');
-    setRoleFilter('');
-    setCreatedPreset('');
-    setCreatedRange({});
-    setGlobalFilter('');
-  };
-
-  const hasFilters =
-    !!statusFilter ||
-    !!roleFilter ||
-    !!createdPreset ||
-    !!createdRange.startDate ||
-    !!createdRange.endDate;
-
   return {
     data: filteredData,
     columns,
+    rowSelection,
+    setRowSelection,
     sorting,
     setSorting,
     globalFilter,
-    setGlobalFilter,
+    setGlobalFilter: setSearchFilter,
     statusFilter,
     setStatusFilter,
     roleFilter,
     setRoleFilter,
-    createdPreset,
-    setCreatedPreset,
     createdRange,
     setCreatedRange,
     roleOptions,
@@ -109,7 +133,7 @@ export function useTeamMembersHandler() {
       currentPage: data?.page ?? 1,
       totalPages: data?.totalPages ?? 1,
       totalItems: data?.total ?? 0,
-      pageSize: limit,
+      pageSize: data?.limit ?? limit,
       onPageChange: setPage,
     },
   };

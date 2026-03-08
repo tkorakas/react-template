@@ -17,8 +17,12 @@ src/
 │   ├── query-client.ts
 │   └── http-client.ts
 ├── data-access/
-│   ├── api.ts       # API functions (public)
-│   └── api.schema.ts # INTERNAL parsing/validation schemas
+│   ├── auth/
+│   │   ├── auth.api.ts
+│   │   └── auth.schema.ts
+│   └── team-members/
+│       ├── team-members.api.ts
+│       └── team-members.schema.ts
 ├── features/        # Route features and subfeatures
 │   ├── home-page.tsx
 │   ├── login/
@@ -48,7 +52,7 @@ features/{feature}/
 
 For single-page features at root level, use `*-page.tsx` (for example `home-page.tsx`).
 
-For list page workflows (table + pagination + route wiring + locale sync), use the `react-template-list-feature` skill.
+For table page workflows (table + pagination + route wiring + locale sync), use the `react-template-table-feature` skill.
 
 For form feature workflows (schema + handler + UI wiring + submit flow), use the `react-template-form-feature` skill.
 
@@ -66,7 +70,7 @@ For endpoint integration workflows (schemas + api functions + mocks alignment), 
 ## Imports
 
 ```tsx
-import { login } from '~/data-access/api';
+import { login } from '~/data-access/auth/auth.api';
 import { TextInput, SimpleForm, Loading } from '~/common/ui';
 import { useAuth } from '~/common/auth';
 import { httpClient } from '~/common/http-client';
@@ -75,13 +79,13 @@ import { httpClient } from '~/common/http-client';
 Rules:
 
 - Use `~/` alias imports
-- Import API functions from `~/data-access/api`
+- Import API functions from feature-specific modules (for example `~/data-access/auth/auth.api`)
 - Do not import from deep UI internals when `~/common/ui` exports what you need
 
 ## Data Access Rules
 
-- Keep API calls centralized in `src/data-access/api.ts`
-- Keep Zod schemas/parsers internal in `src/data-access/api.schema.ts`
+- Keep API calls centralized in `src/data-access/<feature>/<feature>.api.ts`
+- Keep Zod schemas/parsers internal in `src/data-access/<feature>/<feature>.schema.ts`
 - Parse API responses in data-access before returning to features
 - Do not make direct API calls from feature components/handlers
 

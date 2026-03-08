@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { getOAuthAuthUrl } from '~/data-access/api';
+import { getOAuthAuthUrl } from '~/data-access/auth/auth.api';
 
 export function useOAuthButton() {
   const authUrlMutation = useMutation({

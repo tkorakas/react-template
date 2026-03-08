@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { handleApiFieldErrors } from '~/common/errors';
 import { queryClient } from '~/common/query-client';
-import { register } from '~/data-access/api';
+import { register } from '~/data-access/auth/auth.api';
 import { toaster } from '~/common/ui';
 import { registerSchema, type RegisterFormData } from './register.schema';
 

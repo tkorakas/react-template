@@ -1,6 +1,6 @@
 ---
 name: react-template-data-access-endpoint
-description: 'Add or refactor API endpoints in this React template by updating api.schema.ts parsers, api.ts functions, and mocks/api.mockoon.json while keeping feature code free of direct http-client calls.'
+description: 'Add or refactor API endpoints in this React template by updating feature-scoped <feature>.schema.ts parsers, <feature>.api.ts functions, and mocks/api.mockoon.json while keeping feature code free of direct http-client calls.'
 argument-hint: 'Endpoint path, method, request payload, response shape, and consumers'
 ---
 
@@ -10,10 +10,10 @@ argument-hint: 'Endpoint path, method, request payload, response shape, and cons
 
 A safe endpoint integration with aligned parsing and mocks:
 
-- `src/data-access/api.schema.ts`: Zod request/response contracts
-- `src/data-access/api.ts`: exported API function(s) that parse responses
+- `src/data-access/<feature>/<feature>.schema.ts`: Zod request/response contracts
+- `src/data-access/<feature>/<feature>.api.ts`: exported API function(s) that parse responses
 - `mocks/api.mockoon.json`: endpoint and response shape alignment
-- Feature consumers updated to import from `~/data-access/api`
+- Feature consumers updated to import from feature-specific data-access modules
 
 ## When To Use
 
@@ -38,19 +38,19 @@ Collect or infer before coding:
 
 1. Define or Update Schemas
 
-- Add request/response Zod schemas and exported types in `api.schema.ts`.
+- Add request/response Zod schemas and exported types in `<feature>.schema.ts`.
 - Keep parsers internal to data-access.
 - Validate nested collections/pagination contracts explicitly.
 
 2. Implement API Function
 
-- Add exported function in `api.ts` using `httpClient`.
+- Add exported function in `<feature>.api.ts` using `httpClient`.
 - Parse JSON response with schema before returning.
 - Keep transport concerns (paths, params, body) inside data-access.
 
 3. Update Callers
 
-- Ensure features import API functions from `~/data-access/api`.
+- Ensure features import API functions from `~/data-access/<feature>/<feature>.api`.
 - Remove direct `httpClient` calls from feature files.
 - Keep feature handlers focused on query/mutation orchestration.
 
@@ -82,8 +82,8 @@ Collect or infer before coding:
 
 ## Completion Checklist
 
-- Endpoint contracts exist in `api.schema.ts`.
-- API function exists in `api.ts` and returns parsed data.
+- Endpoint contracts exist in `<feature>.schema.ts`.
+- API function exists in `<feature>.api.ts` and returns parsed data.
 - No direct feature-level `httpClient` calls remain for changed flows.
 - Mockoon endpoint is aligned with path and contract.
 - `pnpm type-check` passes.

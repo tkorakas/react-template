@@ -32,7 +32,7 @@ Located in `src/common/auth`:
 ## Flow summary
 
 1. User signs in using credentials or OAuth.
-2. Handlers call `~/data-access/api` auth functions.
+2. Handlers call feature-specific auth data-access functions (for example `~/data-access/auth/auth.api`).
 3. Successful responses populate the user query state.
 4. Guards route users to app or auth pages based on session presence.
 

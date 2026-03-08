@@ -10,13 +10,13 @@ Routes are defined in `src/common/router.tsx` and composed as:
 
 ## Data access boundary
 
-All endpoint calls are centralized in `src/data-access/api.ts`.
+All endpoint calls are centralized in feature folders under `src/data-access/<feature>/<feature>.api.ts`.
 
-`src/data-access/api.schema.ts` contains response parsers and schema contracts.
+`src/data-access/<feature>/<feature>.schema.ts` contains response parsers and schema contracts.
 
 This keeps feature code focused on orchestration:
 
-1. Handler calls API function from `~/data-access/api`.
+1. Handler calls API function from feature-specific modules (for example `~/data-access/auth/auth.api`).
 2. API function executes request with `httpClient`.
 3. Response is parsed by Zod before returning.
 4. Handler updates UI state or triggers side effects.

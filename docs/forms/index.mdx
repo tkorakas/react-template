@@ -22,7 +22,7 @@ Forms follow a strict 3-file pattern per feature.
 1. Define a Zod schema and inferred type.
 2. Build handler with `useForm` and `useMutation`.
 3. Use shared `SimpleForm` and form fields in page.
-4. Call API function from `~/data-access/api` only.
+4. Call API function from feature-specific data-access modules only.
 5. Route on success and map API field errors when needed.
 
 ## Real examples

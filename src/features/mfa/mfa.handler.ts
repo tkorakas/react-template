@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { queryClient } from '~/common/query-client';
-import { verifyMfa } from '~/data-access/api';
+import { verifyMfa } from '~/data-access/auth/auth.api';
 import { mfaSchema, type MfaFormData } from './mfa.schema';
 
 export function useMfaHandler() {
