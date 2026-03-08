@@ -29,7 +29,6 @@ export { useDialog } from './feedback/use-dialog';
 export { SimpleForm } from './form/simple-form';
 
 export { AsyncMultiCombobox } from './form-fields/async-multi-combobox';
-export { CheckboxGroup } from './form-fields/checkbox-group';
 export { Checkbox } from './form-fields/checkbox';
 export { Combobox } from './form-fields/combobox';
 export {
@@ -44,8 +43,9 @@ export {
   type DatePreset,
   type DateRange,
 } from './form-fields/date-selector';
+export { MultiCheckbox } from './form-fields/multi-checkbox';
 export { PinInput } from './form-fields/pin-input';
-export { Radio } from './form-fields/radio';
+export { RadioGroup } from './form-fields/radio-group';
 export { Select } from './form-fields/select';
 export { Switch } from './form-fields/switch';
 export { TextInput } from './form-fields/text-input';

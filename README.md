@@ -52,7 +52,6 @@ Vite is configured to proxy `/api/*` to `http://localhost:3001`, so frontend req
 - `POST /api/auth/logout`
 - `GET /api/auth/oauth/:provider/authorize`
 - `POST /api/auth/oauth/:provider/callback`
-- `GET /api/todos`
 - `GET /api/team-members`
 - `POST /api/team-members`
 

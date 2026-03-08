@@ -1,6 +1,6 @@
 ---
 name: react-template-list-feature
-description: 'Create or refactor a React template list page feature using this repo pattern: feature folder with index.tsx and use-handler.ts, TanStack Query data loading, centralized data-access api.ts, DataTable and Pagination from common/ui, route wiring in common/router.tsx, and i18n locale keys in en/el.'
+description: 'Create or refactor a React template list page feature using this repo pattern: feature folder with <feature>.page.tsx and <feature>.handler.ts, TanStack Query data loading, centralized data-access api.ts, DataTable and Pagination from common/ui, route wiring in common/router.tsx, and i18n locale keys in en/el.'
 argument-hint: 'Feature name, API endpoint, row shape, filters, and route path'
 ---
 
@@ -10,8 +10,8 @@ argument-hint: 'Feature name, API endpoint, row shape, filters, and route path'
 
 A complete list feature that follows this repository architecture:
 
-- `src/features/<feature>/index.tsx`: UI rendering and wiring only
-- `src/features/<feature>/use-handler.ts`: query state, table state, filter logic, pagination handlers
+- `src/features/<feature>/<feature>.page.tsx`: UI rendering and wiring only
+- `src/features/<feature>/<feature>.handler.ts`: query state, table state, filter logic, pagination handlers
 - `src/data-access/api.ts`: API function for the list endpoint
 - `src/data-access/api.schema.ts`: response schema/parser updates
 - `src/common/router.tsx`: lazy route registration via `withSuspense(...)`
@@ -43,7 +43,7 @@ If critical details are missing, ask concise questions before implementation.
 1. Understand Existing Pattern
 
 - Inspect a similar feature (default reference: `src/features/team-members`).
-- Keep UI/logic split strict: no business logic in `index.tsx`.
+- Keep UI/logic split strict: no business logic in `<feature>.page.tsx`.
 - Keep API access centralized: no `httpClient` calls in feature files.
 
 2. Define Data Contract in Data Access
@@ -52,14 +52,14 @@ If critical details are missing, ask concise questions before implementation.
 - Add/update API function in `src/data-access/api.ts`.
 - Return parsed/validated data from data-access functions.
 
-3. Build Handler (`use-handler.ts`)
+3. Build Handler (`<feature>.handler.ts`)
 
 - Add `useQuery` with stable `queryKey` and `queryFn` from `~/data-access/api`.
 - Model local view state in handler: sorting, search text, filters, page.
 - Keep table columns in handler (`useMemo`) with translated headers.
 - Expose derived rows, filter options, loading state, and pagination model.
 
-4. Build UI (`index.tsx`)
+4. Build UI (`<feature>.page.tsx`)
 
 - Use `useTranslation(<namespace>)` for all user-facing labels.
 - Render filters/search/table/pagination with reusable components from `~/common/ui`.
@@ -97,15 +97,15 @@ If critical details are missing, ask concise questions before implementation.
   - Public/auth pages stay under `PublicRoute` + `AuthLayout`.
 
 - Feature complexity:
-  - Simple list: keep only `index.tsx` + `use-handler.ts`.
+  - Simple list: keep only `<feature>.page.tsx` + `<feature>.handler.ts`.
   - Growing feature: split table config or filter utilities, but keep folder-local organization.
 
 ## Completion Checklist
 
 - Data access function exists in `src/data-access/api.ts` and parses via schema.
 - No direct API calls from feature files.
-- `index.tsx` contains rendering/wiring only.
-- `use-handler.ts` contains state, query, derived data, and handlers.
+- `<feature>.page.tsx` contains rendering/wiring only.
+- `<feature>.handler.ts` contains state, query, derived data, and handlers.
 - Route is lazy-loaded and nested correctly.
 - Locale keys exist in both `en` and `el` files.
 - `pnpm type-check` passes.

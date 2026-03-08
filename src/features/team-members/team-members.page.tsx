@@ -17,7 +17,7 @@ import {
   Pagination,
   getDateRangeFromPreset,
 } from '~/common/ui';
-import { useTeamMembersHandler } from './use-handler';
+import { useTeamMembersHandler } from './team-members.handler';
 
 export default function TeamMembersPage() {
   const { t } = useTranslation('team-members');

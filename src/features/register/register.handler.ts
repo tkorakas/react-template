@@ -9,7 +9,7 @@ import { handleApiFieldErrors } from '~/common/errors';
 import { queryClient } from '~/common/query-client';
 import { register } from '~/data-access/api';
 import { toaster } from '~/common/ui';
-import { registerSchema, type RegisterFormData } from './schema';
+import { registerSchema, type RegisterFormData } from './register.schema';
 
 export function useRegisterHandler() {
   const { t } = useTranslation('register');

@@ -41,9 +41,9 @@ For feature folders (for example `login`, `register`, `mfa`, `team-members/creat
 
 ```
 features/{feature}/
-├── index.tsx       # UI layer
-├── use-handler.ts  # Logic layer
-└── schema.ts       # Zod form schema
+├── {feature}.page.tsx       # UI layer
+├── {feature}.handler.ts     # Logic layer
+└── {feature}.schema.ts      # Zod form schema
 ```
 
 For single-page features at root level, use `*-page.tsx` (for example `home-page.tsx`).
@@ -57,11 +57,11 @@ For endpoint integration workflows (schemas + api functions + mocks alignment), 
 ## File Naming
 
 - Use kebab-case for all files
-- Keep existing conventions:
-  - `index.tsx` for folder entry pages/components
-  - `use-handler.ts` for feature logic
-  - `schema.ts` for feature validation schemas
-  - `*-page.tsx` for standalone route pages
+- Use descriptive feature-prefixed names in folders (never generic names)
+  - `{feature}.page.tsx` for route/page rendering
+  - `{feature}.handler.ts` for feature logic
+  - `{feature}.schema.ts` for feature validation schemas
+  - Optional supporting files follow `{feature}.<context>.<type>.ts(x)`
 
 ## Imports
 
@@ -87,8 +87,8 @@ Rules:
 
 ## UI + Handler Separation
 
-- `index.tsx`: rendering and wiring only
-- `use-handler.ts`: state, queries, mutations, navigation, submit handlers
+- `{feature}.page.tsx`: rendering and wiring only
+- `{feature}.handler.ts`: state, queries, mutations, navigation, submit handlers
 - Keep business logic out of UI files
 
 ## Routing Rules

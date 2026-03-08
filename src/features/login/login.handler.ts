@@ -8,7 +8,7 @@ import { useAuth } from '~/common/auth/use-auth';
 import { MfaRequiredError, handleApiFieldErrors } from '~/common/errors';
 import { login } from '~/data-access/api';
 import { toaster } from '~/common/ui';
-import { loginSchema, type LoginFormData } from './schema';
+import { loginSchema, type LoginFormData } from './login.schema';
 
 export function useLoginHandler() {
   const { t } = useTranslation('login');

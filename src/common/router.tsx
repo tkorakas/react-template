@@ -3,16 +3,22 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { AppLayout, AuthLayout, Loading } from '~/common/ui';
 import { PrivateRoute, PublicRoute } from '~/common/auth';
-import LoginPage from '~/features/login';
-import RegisterPage from '~/features/register';
+import LoginPage from '~/features/login/login.page';
+import RegisterPage from '~/features/register/register.page';
 
 const HomePage = lazy(() => import('~/features/home-page'));
-const MfaPage = lazy(() => import('~/features/mfa'));
-const OAuthCallbackPage = lazy(() => import('~/features/oauth/callback'));
-const AdvancedFormPage = lazy(() => import('~/features/advanced-form'));
-const TeamMembersPage = lazy(() => import('~/features/team-members'));
+const MfaPage = lazy(() => import('~/features/mfa/mfa.page'));
+const OAuthCallbackPage = lazy(
+  () => import('~/features/oauth/oauth-callback.page')
+);
+const AdvancedFormPage = lazy(
+  () => import('~/features/advanced-form/advanced-form.page')
+);
+const TeamMembersPage = lazy(
+  () => import('~/features/team-members/team-members.page')
+);
 const CreateTeamMemberPage = lazy(
-  () => import('~/features/team-members/create')
+  () => import('~/features/team-members/create/create-team-member.page')
 );
 const withSuspense = (Component: ComponentType, key: string) => (
   <Suspense key={key} fallback={<Loading />}>

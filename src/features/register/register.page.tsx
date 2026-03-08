@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { OAuthButton } from '~/common/auth';
 import { SimpleForm, TextInput } from '~/common/ui';
-import { useRegisterHandler } from './use-handler';
+import { useRegisterHandler } from './register.handler';
 
 export default function RegisterPage() {
   const { t } = useTranslation('register');

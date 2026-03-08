@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { USER_QUERY_KEY } from '~/common/auth/use-auth';
 import { queryClient } from '~/common/query-client';
 import { verifyMfa } from '~/data-access/api';
-import { mfaSchema, type MfaFormData } from './schema';
+import { mfaSchema, type MfaFormData } from './mfa.schema';
 
 export function useMfaHandler() {
   const { t } = useTranslation('mfa');

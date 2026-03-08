@@ -7,20 +7,20 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Controller, FormProvider } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import {
-  CheckboxGroup,
   DateRangePicker,
   DateSelector,
+  MultiCheckbox,
   PinInput,
-  Radio,
+  RadioGroup,
   Select,
   SimpleForm,
   Switch,
   TextInput,
   Combobox,
 } from '~/common/ui';
-import { useAdvancedFormHandler } from './use-handler';
+import { useAdvancedFormHandler } from './advanced-form.handler';
 
 export default function AdvancedFormPage() {
   const {
@@ -67,38 +67,20 @@ export default function AdvancedFormPage() {
               placeholder="Select role"
             />
 
-            <Controller
+            <RadioGroup
               name="status"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Radio
-                  name={field.name}
-                  label="Status"
-                  options={[
-                    { value: 'Active', label: 'Active' },
-                    { value: 'Pending', label: 'Pending' },
-                    { value: 'Inactive', label: 'Inactive' },
-                  ]}
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={fieldState.error?.message}
-                />
-              )}
+              label="Status"
+              options={[
+                { value: 'Active', label: 'Active' },
+                { value: 'Pending', label: 'Pending' },
+                { value: 'Inactive', label: 'Inactive' },
+              ]}
             />
 
-            <Controller
+            <MultiCheckbox
               name="departments"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <CheckboxGroup
-                  name={field.name}
-                  label="Departments"
-                  options={departmentOptions}
-                  selectedValues={field.value ?? []}
-                  onValueChange={field.onChange}
-                  error={fieldState.error?.message}
-                />
-              )}
+              label="Departments"
+              options={departmentOptions}
             />
 
             <Combobox
@@ -108,20 +90,7 @@ export default function AdvancedFormPage() {
               placeholder="Search region"
             />
 
-            <Controller
-              name="tags"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <CheckboxGroup
-                  name={field.name}
-                  label="Tags"
-                  options={tagOptions}
-                  selectedValues={field.value ?? []}
-                  onValueChange={field.onChange}
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
+            <MultiCheckbox name="tags" label="Tags" options={tagOptions} />
 
             <DateSelector name="datePreset" label="Date preset" />
 
@@ -141,7 +110,7 @@ export default function AdvancedFormPage() {
             />
 
             <HStack gap={3} wrap="wrap">
-              <Badge colorPalette="blue">CheckboxGroup</Badge>
+              <Badge colorPalette="blue">MultiCheckbox</Badge>
               <Badge colorPalette="green">Combobox</Badge>
               <Badge colorPalette="purple">Select</Badge>
               <Badge colorPalette="orange">DateRange</Badge>

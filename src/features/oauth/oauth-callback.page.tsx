@@ -1,5 +1,5 @@
 import { Box, Spinner, Text, VStack } from '@chakra-ui/react';
-import { useOAuthHandler } from './use-handler';
+import { useOAuthHandler } from './oauth-callback.handler';
 
 export default function OAuthCallbackPage() {
   useOAuthHandler();

@@ -2,7 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toaster } from '~/common/ui';
-import { advancedFormSchema, type AdvancedFormData } from './schema';
+import {
+  advancedFormSchema,
+  type AdvancedFormData,
+} from './advanced-form.schema';
 
 const roleOptions = [
   { label: 'Admin', value: 'admin' },

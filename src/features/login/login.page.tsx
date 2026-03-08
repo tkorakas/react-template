@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { OAuthButton } from '~/common/auth';
 import { SimpleForm, TextInput } from '~/common/ui';
-import { useLoginHandler } from './use-handler';
+import { useLoginHandler } from './login.handler';
 
 export default function LoginPage() {
   const { t } = useTranslation('login');

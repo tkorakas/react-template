@@ -4,7 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { createTeamMember } from '~/data-access/api';
-import { createTeamMemberSchema, type CreateTeamMemberInput } from './schema';
+import {
+  createTeamMemberSchema,
+  type CreateTeamMemberInput,
+} from './create-team-member.schema';
 
 export function useCreateTeamMemberHandler() {
   const { t } = useTranslation('team-members');
