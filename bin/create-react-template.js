@@ -1,15 +1,24 @@
 #!/usr/bin/env node
 
+import {
+  cancel,
+  confirm,
+  intro,
+  isCancel,
+  log,
+  outro,
+  text,
+} from '@clack/prompts';
 import { constants } from 'node:fs';
 import { access, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { stdin as input, stdout as output } from 'node:process';
-import { createInterface } from 'node:readline/promises';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const templateRoot = path.resolve(__dirname, '..');
+const generatorTemplateDir = path.resolve(__dirname, 'templates');
+const templateCache = new Map();
 
 async function exists(filePath) {
   try {
@@ -37,26 +46,47 @@ function toPackageName(projectName) {
   );
 }
 
-function parseYesNo(value) {
-  const answer = value.trim().toLowerCase();
-  if (['y', 'yes'].includes(answer)) return true;
-  if (['n', 'no'].includes(answer)) return false;
-  return null;
+function handlePromptCancel(value) {
+  if (!isCancel(value)) return;
+  cancel('Cancelled.');
+  process.exit(0);
 }
 
-async function askYesNo(rl, question) {
-  // Keep prompting until user provides an explicit yes/no answer.
-  for (;;) {
-    const inputValue = await rl.question(`${question} (y/n): `);
-    const parsed = parseYesNo(inputValue);
-    if (parsed !== null) {
-      return parsed;
-    }
-    output.write('Please answer with y/yes or n/no.\n');
-  }
+async function askText(message, defaultValue) {
+  const value = await text({
+    message,
+    defaultValue,
+    validate: inputValue =>
+      inputValue.trim().length > 0 ? undefined : 'Please enter a project name.',
+  });
+  handlePromptCancel(value);
+  return String(value).trim();
 }
 
-function buildRouterTs(config) {
+async function askConfirm(message, initialValue = true) {
+  const value = await confirm({ message, initialValue });
+  handlePromptCancel(value);
+  return value;
+}
+
+async function loadTemplate(templateName) {
+  const cached = templateCache.get(templateName);
+  if (cached) return cached;
+
+  const templatePath = path.join(generatorTemplateDir, templateName);
+  const template = await readFile(templatePath, 'utf8');
+  templateCache.set(templateName, template);
+  return template;
+}
+
+function renderTemplate(template, values = {}) {
+  return Object.entries(values).reduce(
+    (output, [key, value]) => output.replaceAll(`{{${key}}}`, value),
+    template
+  );
+}
+
+async function buildRouterTs(config) {
   const { auth, login, register, mfa, oauth, advancedForm } = config;
 
   const protectedRoutes = [
@@ -71,40 +101,15 @@ function buildRouterTs(config) {
   }
 
   if (!auth) {
-    return `import { Suspense, lazy, type ComponentType } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+    const template = await loadTemplate('router.no-auth.tsx.tpl');
+    const advancedFormImport = advancedForm
+      ? `const AdvancedFormPage = lazy(\n  () => import('~/features/advanced-form/advanced-form.page')\n);\n`
+      : '';
 
-import { AppLayout, Loading } from '~/common/ui';
-
-const HomePage = lazy(() => import('~/features/home-page'));
-const TeamMembersPage = lazy(
-  () => import('~/features/team-members/team-members.page')
-);
-const CreateTeamMemberPage = lazy(
-  () => import('~/features/team-members/create/create-team-member.page')
-);
-${
-  advancedForm
-    ? `const AdvancedFormPage = lazy(
-  () => import('~/features/advanced-form/advanced-form.page')
-);
-`
-    : ''
-}const withSuspense = (Component: ComponentType, key: string) => (
-  <Suspense key={key} fallback={<Loading />}>
-    <Component />
-  </Suspense>
-);
-
-export const router = createBrowserRouter([
-  {
-    element: <AppLayout />,
-    children: [
-${protectedRoutes.join('\n')}
-    ],
-  },
-]);
-`;
+    return renderTemplate(template, {
+      ADVANCED_FORM_IMPORT: advancedFormImport,
+      PROTECTED_ROUTES: protectedRoutes.join('\n'),
+    });
   }
 
   const hasAuthLayoutRoutes = login || register || mfa;
@@ -130,17 +135,13 @@ ${protectedRoutes.join('\n')}
 
   if (oauth) {
     authImports.push(
-      `const OAuthCallbackPage = lazy(
-  () => import('~/features/oauth/oauth-callback.page')
-);`
+      `const OAuthCallbackPage = lazy(\n  () => import('~/features/oauth/oauth-callback.page')\n);`
     );
   }
 
   if (advancedForm) {
     authImports.push(
-      `const AdvancedFormPage = lazy(
-  () => import('~/features/advanced-form/advanced-form.page')
-);`
+      `const AdvancedFormPage = lazy(\n  () => import('~/features/advanced-form/advanced-form.page')\n);`
     );
   }
 
@@ -179,349 +180,39 @@ ${authLayoutRoutes.join('\n')}
       },`);
   }
 
-  return `import { Suspense, lazy, type ComponentType } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
-
-import { PrivateRoute, PublicRoute } from '~/common/auth';
-import { AppLayout, AuthLayout, Loading } from '~/common/ui';
-
-const HomePage = lazy(() => import('~/features/home-page'));
-const TeamMembersPage = lazy(
-  () => import('~/features/team-members/team-members.page')
-);
-const CreateTeamMemberPage = lazy(
-  () => import('~/features/team-members/create/create-team-member.page')
-);
-${authImports.join('\n')}
-const withSuspense = (Component: ComponentType, key: string) => (
-  <Suspense key={key} fallback={<Loading />}>
-    <Component />
-  </Suspense>
-);
-
-export const router = createBrowserRouter([
-  {
-    element: <PrivateRoute />,
-    children: [
-      {
-        element: <AppLayout />,
-        children: [
-${protectedRoutes.join('\n')}
-        ],
-      },
-    ],
-  },
-  {
-    element: <PublicRoute />,
-    children: [
-${publicChildren.join('\n')}
-    ],
-  },
-]);
-`;
+  const template = await loadTemplate('router.auth.tsx.tpl');
+  return renderTemplate(template, {
+    AUTH_IMPORTS: authImports.join('\n'),
+    PROTECTED_ROUTES: protectedRoutes.join('\n'),
+    PUBLIC_CHILDREN: publicChildren.join('\n'),
+  });
 }
 
-function buildMainTs({ auth }) {
-  if (auth) {
-    return `import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { StrictMode, Suspense } from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-
-import { AuthManager } from '~/common/auth';
-import '~/common/i18n';
-import { queryClient } from '~/common/query-client';
-import { router } from '~/common/router';
-import { system } from '~/common/system';
-import { DialogProvider, Loading, Toaster } from '~/common/ui';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Root element not found');
-
-createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={system}>
-        <Suspense fallback={<Loading />}>
-          <DialogProvider>
-            <AuthManager>
-              <RouterProvider router={router} />
-            </AuthManager>
-          </DialogProvider>
-        </Suspense>
-        <Toaster />
-      </ChakraProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  </StrictMode>
-);
-`;
-  }
-
-  return `import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { StrictMode, Suspense } from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-
-import '~/common/i18n';
-import { queryClient } from '~/common/query-client';
-import { router } from '~/common/router';
-import { system } from '~/common/system';
-import { DialogProvider, Loading, Toaster } from '~/common/ui';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Root element not found');
-
-createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={system}>
-        <Suspense fallback={<Loading />}>
-          <DialogProvider>
-            <RouterProvider router={router} />
-          </DialogProvider>
-        </Suspense>
-        <Toaster />
-      </ChakraProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  </StrictMode>
-);
-`;
+async function buildMainTs({ auth }) {
+  return loadTemplate(auth ? 'main.auth.tsx.tpl' : 'main.no-auth.tsx.tpl');
 }
 
-function buildAppLayoutTs({ auth, advancedForm }) {
+async function buildAppLayoutTs({ auth, advancedForm }) {
+  const template = await loadTemplate(
+    auth ? 'app-layout.auth.tsx.tpl' : 'app-layout.no-auth.tsx.tpl'
+  );
+
   const advancedNavEntry = advancedForm
     ? `  { nameKey: 'navigation.advancedForm', path: '/advanced-form' },\n`
     : '';
 
-  if (auth) {
-    return `import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  Menu,
-  Portal,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useTranslation } from 'react-i18next';
-import { NavLink, Outlet } from 'react-router-dom';
-import { useAuth } from '~/common/auth';
+  return renderTemplate(template, {
+    ADVANCED_NAV_ENTRY: advancedNavEntry,
+  });
+}
 
-const navigation = [
-  { nameKey: 'navigation.home', path: '/' },
-  { nameKey: 'navigation.teamMembers', path: '/team-members' },
-${advancedNavEntry}];
-
-export function AppLayout() {
-  const { t } = useTranslation();
-  const { user, logout } = useAuth();
-
-  return (
-    <Flex minH="100vh" bg="gray.50">
-      <Box
-        as="nav"
-        w="250px"
-        bg="white"
-        borderRightWidth="1px"
-        borderColor="gray.200"
-        p={4}
-      >
-        <VStack align="stretch" gap={2}>
-          <Text fontSize="xl" fontWeight="bold" mb={4} px={3}>
-            {t('appName')}
-          </Text>
-          {navigation.map(item => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/'}
-              style={({ isActive }) => ({
-                display: 'block',
-                padding: 'var(--chakra-spacing-2) var(--chakra-spacing-3)',
-                borderRadius: 'var(--chakra-radii-md)',
-                backgroundColor: isActive
-                  ? 'var(--chakra-colors-blue-50)'
-                  : 'transparent',
-                color: isActive
-                  ? 'var(--chakra-colors-blue-600)'
-                  : 'var(--chakra-colors-gray-700)',
-                fontWeight: isActive ? 600 : 400,
-                transition: 'all 0.2s',
-              })}
-            >
-              {t(item.nameKey)}
-            </NavLink>
-          ))}
-        </VStack>
-      </Box>
-
-      <Flex flex="1" direction="column">
-        <Box
-          as="header"
-          bg="white"
-          borderBottomWidth="1px"
-          borderColor="gray.200"
-          px={6}
-          py={3}
-        >
-          <Flex justify="flex-end" align="center">
-            <HStack gap={4}>
-              <Text fontSize="sm" color="gray.600">
-                {user?.name}
-              </Text>
-
-              <Menu.Root
-                positioning={{
-                  placement: 'bottom-end',
-                  offset: { mainAxis: 8 },
-                }}
-              >
-                <Menu.Trigger asChild>
-                  <Box
-                    as="button"
-                    w="10"
-                    h="10"
-                    borderRadius="full"
-                    bg="blue.500"
-                    color="white"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    fontWeight="bold"
-                    fontSize="sm"
-                    cursor="pointer"
-                    _hover={{ bg: 'blue.600' }}
-                    transition="all 0.2s"
-                  >
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
-                  </Box>
-                </Menu.Trigger>
-                <Portal>
-                  <Menu.Positioner>
-                    <Menu.Content minW="150px">
-                      <Menu.Item
-                        value="logout"
-                        color="red.500"
-                        onClick={logout}
-                      >
-                        {t('actions.logout')}
-                      </Menu.Item>
-                    </Menu.Content>
-                  </Menu.Positioner>
-                </Portal>
-              </Menu.Root>
-            </HStack>
-          </Flex>
-        </Box>
-
-        <Box as="main" flex="1" overflowY="auto">
-          <Container maxW="container.xl" py={6}>
-            <Outlet />
-          </Container>
-        </Box>
-      </Flex>
-    </Flex>
+async function buildHttpClientTs({ auth }) {
+  return loadTemplate(
+    auth ? 'http-client.auth.ts.tpl' : 'http-client.no-auth.ts.tpl'
   );
 }
-`;
-  }
 
-  return `import { Box, Container, Flex, Text, VStack } from '@chakra-ui/react';
-import { useTranslation } from 'react-i18next';
-import { NavLink, Outlet } from 'react-router-dom';
-
-const navigation = [
-  { nameKey: 'navigation.home', path: '/' },
-  { nameKey: 'navigation.teamMembers', path: '/team-members' },
-${advancedNavEntry}];
-
-export function AppLayout() {
-  const { t } = useTranslation();
-
-  return (
-    <Flex minH="100vh" bg="gray.50">
-      <Box
-        as="nav"
-        w="250px"
-        bg="white"
-        borderRightWidth="1px"
-        borderColor="gray.200"
-        p={4}
-      >
-        <VStack align="stretch" gap={2}>
-          <Text fontSize="xl" fontWeight="bold" mb={4} px={3}>
-            {t('appName')}
-          </Text>
-          {navigation.map(item => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/'}
-              style={({ isActive }) => ({
-                display: 'block',
-                padding: 'var(--chakra-spacing-2) var(--chakra-spacing-3)',
-                borderRadius: 'var(--chakra-radii-md)',
-                backgroundColor: isActive
-                  ? 'var(--chakra-colors-blue-50)'
-                  : 'transparent',
-                color: isActive
-                  ? 'var(--chakra-colors-blue-600)'
-                  : 'var(--chakra-colors-gray-700)',
-                fontWeight: isActive ? 600 : 400,
-                transition: 'all 0.2s',
-              })}
-            >
-              {t(item.nameKey)}
-            </NavLink>
-          ))}
-        </VStack>
-      </Box>
-
-      <Flex flex="1" direction="column">
-        <Box as="main" flex="1" overflowY="auto">
-          <Container maxW="container.xl" py={6}>
-            <Outlet />
-          </Container>
-        </Box>
-      </Flex>
-    </Flex>
-  );
-}
-`;
-}
-
-function buildHttpClientTs({ auth }) {
-  if (!auth) {
-    return `import ky from 'ky';
-
-export const httpClient = ky.create({
-  prefixUrl: '/api',
-  credentials: 'include',
-  timeout: 10000,
-});
-`;
-  }
-
-  return `import ky from 'ky';
-import { hooks } from './auth/auth-hooks';
-
-export const httpClient = ky.create({
-  prefixUrl: '/api',
-  credentials: 'include',
-  timeout: 10000,
-  hooks,
-});
-`;
-}
-
-function buildI18nTs({ auth, login, register, mfa }) {
+async function buildI18nTs({ auth, login, register, mfa }) {
   const namespaces = ['common', 'team-members'];
 
   if (auth) {
@@ -532,177 +223,17 @@ function buildI18nTs({ auth, login, register, mfa }) {
   }
 
   const namespaceEntries = namespaces.map(value => `  '${value}',`).join('\n');
+  const template = await loadTemplate('i18n.ts.tpl');
 
-  return `import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import HttpBackend from 'i18next-http-backend';
-
-export const supportedLanguages = ['en', 'el'] as const;
-export type SupportedLanguage = (typeof supportedLanguages)[number];
-
-export const namespaces = [
-${namespaceEntries}
-] as const;
-
-i18n
-  .use(HttpBackend)
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    fallbackLng: 'en',
-    supportedLngs: supportedLanguages,
-    defaultNS: 'common',
-    ns: namespaces,
-    interpolation: {
-      escapeValue: false,
-    },
-    detection: {
-      order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-      lookupQuerystring: 'lng',
-      lookupLocalStorage: 'i18nextLng',
-    },
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
-    },
+  return renderTemplate(template, {
+    NAMESPACE_ENTRIES: namespaceEntries,
   });
-
-export default i18n;
-`;
 }
 
-function buildUiIndexTs({ auth }) {
-  return auth
-    ? `export { AppLayout } from './layout/app-layout';
-export { AuthLayout } from './layout/auth-layout';
-
-export { Loading } from './display/loading';
-
-export {
-  DataTable,
-  type Cell,
-  type ColumnDef,
-  type Header,
-  type Row,
-  type RowSelectionState,
-  type SortingState,
-} from './data/data-table';
-export { Pagination } from './data/pagination';
-export { RowActionMenu } from './data/row-action-menu';
-export { TableLoader, type TableLoaderProps } from './data/table-loader';
-export {
-  TableRowColorIndicator,
-  type TableRowColorIndicatorProps,
-} from './data/table-row-color-indicator';
-export { UserAvatar } from './data/user-avatar';
-
-export { Drawer } from './feedback/drawer';
-export { DialogProvider } from './feedback/dialog-provider';
-export { Toaster, toaster } from './feedback/toaster';
-export { useDialog } from './feedback/use-dialog';
-
-export { SimpleForm } from './form/simple-form';
-
-export { AsyncMultiCombobox } from './form-fields/async-multi-combobox';
-export { Checkbox } from './form-fields/checkbox';
-export { Combobox } from './form-fields/combobox';
-export {
-  DateRangePicker,
-  type DateRangeValue,
-} from './form-fields/date-range-picker';
-export { DateRangeSelector } from './form-fields/date-range-selector';
-export {
-  DATE_PRESETS,
-  DateSelector,
-  getDateRangeFromPreset,
-  type DatePreset,
-  type DateRange,
-} from './form-fields/date-selector';
-export { MultiCheckbox } from './form-fields/multi-checkbox';
-export { PinInput } from './form-fields/pin-input';
-export { RadioGroup } from './form-fields/radio-group';
-export { Select } from './form-fields/select';
-export { Switch } from './form-fields/switch';
-export { TextInput } from './form-fields/text-input';
-
-export { TableActionBar } from './table/action-bar';
-export { FiltersPanel } from './table/filters-panel';
-export {
-  countActiveFilters,
-  hasActiveFilters,
-  hasFiltersChanged,
-} from './table/filters.utils';
-export {
-  TableChipFilter,
-  type TableChipFilterOption,
-} from './table/table-chip-filter';
-export { useTableState } from './table/use-table-state';
-`
-    : `export { AppLayout } from './layout/app-layout';
-
-export { Loading } from './display/loading';
-
-export {
-  DataTable,
-  type Cell,
-  type ColumnDef,
-  type Header,
-  type Row,
-  type RowSelectionState,
-  type SortingState,
-} from './data/data-table';
-export { Pagination } from './data/pagination';
-export { RowActionMenu } from './data/row-action-menu';
-export { TableLoader, type TableLoaderProps } from './data/table-loader';
-export {
-  TableRowColorIndicator,
-  type TableRowColorIndicatorProps,
-} from './data/table-row-color-indicator';
-export { UserAvatar } from './data/user-avatar';
-
-export { Drawer } from './feedback/drawer';
-export { DialogProvider } from './feedback/dialog-provider';
-export { Toaster, toaster } from './feedback/toaster';
-export { useDialog } from './feedback/use-dialog';
-
-export { SimpleForm } from './form/simple-form';
-
-export { AsyncMultiCombobox } from './form-fields/async-multi-combobox';
-export { Checkbox } from './form-fields/checkbox';
-export { Combobox } from './form-fields/combobox';
-export {
-  DateRangePicker,
-  type DateRangeValue,
-} from './form-fields/date-range-picker';
-export { DateRangeSelector } from './form-fields/date-range-selector';
-export {
-  DATE_PRESETS,
-  DateSelector,
-  getDateRangeFromPreset,
-  type DatePreset,
-  type DateRange,
-} from './form-fields/date-selector';
-export { MultiCheckbox } from './form-fields/multi-checkbox';
-export { PinInput } from './form-fields/pin-input';
-export { RadioGroup } from './form-fields/radio-group';
-export { Select } from './form-fields/select';
-export { Switch } from './form-fields/switch';
-export { TextInput } from './form-fields/text-input';
-
-export { TableActionBar } from './table/action-bar';
-export { FiltersPanel } from './table/filters-panel';
-export {
-  countActiveFilters,
-  hasActiveFilters,
-  hasFiltersChanged,
-} from './table/filters.utils';
-export {
-  TableChipFilter,
-  type TableChipFilterOption,
-} from './table/table-chip-filter';
-export { useTableState } from './table/use-table-state';
-`;
+async function buildUiIndexTs({ auth }) {
+  return loadTemplate(
+    auth ? 'ui-index.auth.ts.tpl' : 'ui-index.no-auth.ts.tpl'
+  );
 }
 
 async function pruneMockoon(filePath, config) {
@@ -770,9 +301,20 @@ async function copyTemplate(destinationDir) {
         'dist',
         '.DS_Store',
         'bin',
+        'docs',
+        'screenshots',
+      ]);
+      const blockedFiles = new Set([
+        'netlify.toml',
+        'rspress.config.ts',
+        'react-template-api.json',
       ]);
 
       if (blocked.has(firstSegment)) {
+        return false;
+      }
+
+      if (blockedFiles.has(relative)) {
         return false;
       }
 
@@ -855,32 +397,32 @@ async function applyFeatureSelection(destinationDir, config) {
 
   await writeFile(
     path.join(destinationDir, 'src/common/router.tsx'),
-    buildRouterTs(config),
+    await buildRouterTs(config),
     'utf8'
   );
   await writeFile(
     path.join(destinationDir, 'src/main.tsx'),
-    buildMainTs(config),
+    await buildMainTs(config),
     'utf8'
   );
   await writeFile(
     path.join(destinationDir, 'src/common/ui/layout/app-layout.tsx'),
-    buildAppLayoutTs(config),
+    await buildAppLayoutTs(config),
     'utf8'
   );
   await writeFile(
     path.join(destinationDir, 'src/common/http-client.ts'),
-    buildHttpClientTs(config),
+    await buildHttpClientTs(config),
     'utf8'
   );
   await writeFile(
     path.join(destinationDir, 'src/common/ui/index.ts'),
-    buildUiIndexTs(config),
+    await buildUiIndexTs(config),
     'utf8'
   );
   await writeFile(
     path.join(destinationDir, 'src/common/i18n.ts'),
-    buildI18nTs(config),
+    await buildI18nTs(config),
     'utf8'
   );
 
@@ -900,93 +442,88 @@ async function applyFeatureSelection(destinationDir, config) {
 }
 
 async function run() {
-  const rl = createInterface({ input, output });
+  intro('create-react-template');
+
+  const cliProjectName = process.argv[2]?.trim();
+  const projectName =
+    cliProjectName || (await askText('Project name', 'my-react-app'));
+
+  if (!projectName) {
+    throw new Error('Project name is required.');
+  }
+
+  const auth = await askConfirm('Do you want auth?');
+
+  let login = false;
+  let register = false;
+  let mfa = false;
+  let oauth = false;
+
+  if (auth) {
+    register = await askConfirm('Do you want registration?');
+    login = await askConfirm('Do you want login?');
+    mfa = await askConfirm('Do you want mfa?');
+    oauth = await askConfirm('Do you want oauth?');
+
+    if (!login) {
+      log.warn(
+        'Login has been enabled automatically because auth flow redirects unauthenticated users to /login.'
+      );
+      login = true;
+    }
+  }
+
+  const advancedForm = await askConfirm(
+    'Do you want form examples (advanced form)?'
+  );
+
+  const destinationDir = path.resolve(process.cwd(), projectName);
+
+  if (await exists(destinationDir)) {
+    throw new Error(`Target directory already exists: ${destinationDir}`);
+  }
+
+  const config = {
+    auth,
+    login,
+    register,
+    mfa,
+    oauth,
+    advancedForm,
+  };
+
+  log.info(`\nSelected features:
+- auth: ${config.auth ? 'yes' : 'no'}
+- login: ${config.login ? 'yes' : 'no'}
+- register: ${config.register ? 'yes' : 'no'}
+- mfa: ${config.mfa ? 'yes' : 'no'}
+- oauth: ${config.oauth ? 'yes' : 'no'}
+- advanced form: ${config.advancedForm ? 'yes' : 'no'}\n`);
+
+  const proceed = await askConfirm('Create project with these options?');
+  if (!proceed) {
+    outro('Cancelled.');
+    return;
+  }
+
+  await mkdir(destinationDir, { recursive: true });
 
   try {
-    const cliProjectName = process.argv[2];
-    const projectName = cliProjectName
-      ? cliProjectName.trim()
-      : (await rl.question('Project name: ')).trim();
-
-    if (!projectName) {
-      throw new Error('Project name is required.');
-    }
-
-    const auth = await askYesNo(rl, 'Do you want auth?');
-
-    let login = false;
-    let register = false;
-    let mfa = false;
-    let oauth = false;
-
-    if (auth) {
-      register = await askYesNo(rl, 'Do you want registration?');
-      login = await askYesNo(rl, 'Do you want login?');
-      mfa = await askYesNo(rl, 'Do you want mfa?');
-      oauth = await askYesNo(rl, 'Do you want oauth?');
-
-      if (!login) {
-        output.write(
-          'Login has been enabled automatically because auth flow redirects unauthenticated users to /login.\n'
-        );
-        login = true;
-      }
-    }
-
-    const advancedForm = await askYesNo(
-      rl,
-      'Do you want form examples (advanced form)?'
-    );
-
-    const destinationDir = path.resolve(process.cwd(), projectName);
-
-    if (await exists(destinationDir)) {
-      throw new Error(`Target directory already exists: ${destinationDir}`);
-    }
-
-    const config = {
-      auth,
-      login,
-      register,
-      mfa,
-      oauth,
-      advancedForm,
-    };
-
-    output.write('\nSelected features:\n');
-    output.write(`- auth: ${config.auth ? 'yes' : 'no'}\n`);
-    output.write(`- login: ${config.login ? 'yes' : 'no'}\n`);
-    output.write(`- register: ${config.register ? 'yes' : 'no'}\n`);
-    output.write(`- mfa: ${config.mfa ? 'yes' : 'no'}\n`);
-    output.write(`- oauth: ${config.oauth ? 'yes' : 'no'}\n`);
-    output.write(`- advanced form: ${config.advancedForm ? 'yes' : 'no'}\n\n`);
-
-    const proceed = await askYesNo(rl, 'Create project with these options?');
-    if (!proceed) {
-      output.write('Cancelled.\n');
-      return;
-    }
-
-    await mkdir(destinationDir, { recursive: true });
-
-    try {
-      await copyTemplate(destinationDir);
-      await updateOutputPackageJson(destinationDir, projectName);
-      await applyFeatureSelection(destinationDir, config);
-    } catch (error) {
-      await rm(destinationDir, { recursive: true, force: true });
-      throw error;
-    }
-
-    output.write(`\nProject created at ${destinationDir}\n`);
-    output.write('Next steps:\n');
-    output.write(`  cd ${projectName}\n`);
-    output.write('  pnpm install\n');
-    output.write('  pnpm type-check\n');
-    output.write('  pnpm build\n');
-  } finally {
-    rl.close();
+    await copyTemplate(destinationDir);
+    await updateOutputPackageJson(destinationDir, projectName);
+    await applyFeatureSelection(destinationDir, config);
+  } catch (error) {
+    await rm(destinationDir, { recursive: true, force: true });
+    throw error;
   }
+
+  outro(`Project created at ${destinationDir}
+
+Next steps:
+  cd ${projectName}
+  pnpm install
+  pnpm type-check
+  pnpm build`);
 }
 
 run().catch(error => {

@@ -1,0 +1,12 @@
+# Exclude repository/docs assets that are not needed in the published scaffold package.
+docs/
+screenshots/
+.vscode/
+.github/
+
+# Exclude repo-only config files that are not used in generated apps.
+netlify.toml
+rspress.config.ts
+
+# Exclude local environment files.
+.env

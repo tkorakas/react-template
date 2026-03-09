@@ -57,10 +57,10 @@ pnpm docs:dev
 
 ## Mock API
 
-This project uses Mockoon with `react-template-api.json`.
+This project uses Mockoon with `mocks/api.mockoon.json`.
 
 1. Open Mockoon.
-2. Import `react-template-api.json`.
+2. Import `mocks/api.mockoon.json`.
 3. Start the environment on port `3001`.
 
 The frontend proxies `/api/*` to `http://localhost:3001` in development.

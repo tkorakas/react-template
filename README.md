@@ -62,7 +62,7 @@ This template uses Mockoon instead of a custom Node mock server.
 ### Setup
 
 1. Open Mockoon.
-2. Import `react-template-api.json`.
+2. Import `mocks/api.mockoon.json`.
 3. Start the environment on port `3001`.
 
 Vite is configured to proxy `/api/*` to `http://localhost:3001`, so frontend requests work without CORS changes.
