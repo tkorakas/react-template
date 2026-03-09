@@ -7,6 +7,19 @@ This repository includes an AI-guided workflow with project-level instructions a
 - `AGENTS.md`: global coding conventions, architecture rules, and verification commands.
 - `.agents/skills/*/SKILL.md`: specialized playbooks for common workstreams.
 
+## How this speeds up development
+
+- You describe intent at feature level, not file-by-file implementation details.
+- Agent instructions keep generated code aligned with this template architecture.
+- Skills provide repeatable workflows for forms, tables, and endpoint integration.
+
+Typical flow:
+
+1. Read `AGENTS.md` constraints.
+2. Pick the matching skill for your task.
+3. Ask AI to implement using that skill.
+4. Validate with type-check/build.
+
 ## What to read next
 
 - [AGENTS.md summary](/ai/agents)

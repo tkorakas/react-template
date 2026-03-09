@@ -7,15 +7,21 @@ export default defineConfig({
     'Architecture and implementation guide for the React template project.',
   themeConfig: {
     nav: [
-      { text: 'Introduction', link: '/introduction' },
+      { text: 'Getting started', link: '/getting-started/' },
       { text: 'Architecture', link: '/architecture/' },
-      { text: 'Components', link: '/components/' },
-      { text: 'Auth', link: '/auth/' },
-      { text: 'Forms', link: '/forms/' },
-      { text: 'Tables', link: '/tables/' },
+      { text: 'Features', link: '/features/' },
       { text: 'AI', link: '/ai/' },
     ],
     sidebar: {
+      '/getting-started/': [
+        {
+          text: 'Getting started',
+          items: [
+            { text: 'Overview', link: '/getting-started/' },
+            { text: 'Installation', link: '/getting-started/installation' },
+          ],
+        },
+      ],
       '/architecture/': [
         {
           text: 'Architecture',
@@ -29,38 +35,85 @@ export default defineConfig({
           ],
         },
       ],
-      '/components/': [
+      '/features/': [
         {
-          text: 'Components',
+          text: 'Features',
           items: [
-            { text: 'Overview', link: '/components/' },
+            { text: 'Overview', link: '/features/' },
             {
-              text: 'Form Components',
-              link: '/components/form-components',
+              text: 'Components',
+              link: '/features/components/',
             },
             {
-              text: 'Data and Feedback',
-              link: '/components/data-and-feedback-components',
+              text: 'Auth',
+              link: '/features/auth/',
+            },
+            {
+              text: 'Forms',
+              link: '/features/forms/',
+            },
+            {
+              text: 'Tables',
+              link: '/features/tables/',
             },
           ],
         },
       ],
-      '/auth/': [
+      '/features/components/': [
         {
-          text: 'Auth',
-          items: [{ text: 'Overview', link: '/auth/' }],
+          text: 'Features',
+          items: [
+            { text: 'Overview', link: '/features/' },
+            { text: 'Components', link: '/features/components/' },
+            {
+              text: 'Form Components',
+              link: '/features/components/form-components',
+            },
+            {
+              text: 'Data and Feedback',
+              link: '/features/components/data-and-feedback-components',
+            },
+            { text: 'Auth', link: '/features/auth/' },
+            { text: 'Forms', link: '/features/forms/' },
+            { text: 'Tables', link: '/features/tables/' },
+          ],
         },
       ],
-      '/forms/': [
+      '/features/auth/': [
         {
-          text: 'Forms',
-          items: [{ text: 'Overview', link: '/forms/' }],
+          text: 'Features',
+          items: [
+            { text: 'Overview', link: '/features/' },
+            { text: 'Components', link: '/features/components/' },
+            { text: 'Auth', link: '/features/auth/' },
+            { text: 'Auth Deep Dive', link: '/features/auth/auth-deep-dive' },
+            { text: 'Forms', link: '/features/forms/' },
+            { text: 'Tables', link: '/features/tables/' },
+          ],
         },
       ],
-      '/tables/': [
+      '/features/forms/': [
         {
-          text: 'Tables',
-          items: [{ text: 'Overview', link: '/tables/' }],
+          text: 'Features',
+          items: [
+            { text: 'Overview', link: '/features/' },
+            { text: 'Components', link: '/features/components/' },
+            { text: 'Auth', link: '/features/auth/' },
+            { text: 'Forms', link: '/features/forms/' },
+            { text: 'Tables', link: '/features/tables/' },
+          ],
+        },
+      ],
+      '/features/tables/': [
+        {
+          text: 'Features',
+          items: [
+            { text: 'Overview', link: '/features/' },
+            { text: 'Components', link: '/features/components/' },
+            { text: 'Auth', link: '/features/auth/' },
+            { text: 'Forms', link: '/features/forms/' },
+            { text: 'Tables', link: '/features/tables/' },
+          ],
         },
       ],
       '/ai/': [

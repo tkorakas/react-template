@@ -1,25 +1,30 @@
-# React Template Documentation
+# React Template
 
-This documentation explains how this project is structured and how to extend it safely.
+A production-ready React starter that ships with premade auth flows and a strict feature architecture so teams can move fast without losing consistency.
 
-## What this project is
+## What you get
 
-This repository is a production-ready React + TypeScript template focused on:
+- Premade auth flows: login, register, MFA, and OAuth callback.
+- Auto-wired forms with Chakra UI v3, React Hook Form, and Zod.
+- Feature-first patterns with clear page/handler/schema boundaries.
+- Centralized data-access layer with schema parsing.
+- Built-in i18n setup with `en` and `el` locales.
+- AI acceleration via `AGENTS.md` instructions and specialized skills.
 
-- Authentication flows (login, register, MFA, OAuth callback).
-- Feature-oriented architecture with strict UI and logic separation.
-- Shared reusable UI primitives for forms, tables, and feedback.
-- Centralized API access with schema-based response parsing.
-- i18n-first UI copy and validation messages.
+## Quick start
 
-## Quick links
+```bash
+npx @tkorakas/create-react-template@latest my-app
+cd my-app
+pnpm install
+pnpm run dev
+```
 
-- [Introduction](/introduction)
+## Explore the docs
+
+- [Getting started](/getting-started/)
 - [Architecture](/architecture/)
-- [Components](/components/)
-- [Auth](/auth/)
-- [Forms](/forms/)
-- [Tables](/tables/)
+- [Features](/features/)
 - [AI](/ai/)
 
 ## Tech stack
@@ -33,21 +38,7 @@ This repository is a production-ready React + TypeScript template focused on:
 - Ky HTTP client
 - i18next
 
-## Local setup
-
-Create a new app from this template:
-
-```bash
-npx @tkorakas/create-react-template my-app
-```
-
-Or fallback to GitHub:
-
-```bash
-npx github:tkorakas/react-template my-app
-```
-
-Develop this repository locally:
+## Working on this repository
 
 ```bash
 pnpm install
@@ -55,7 +46,7 @@ cp .env.dist .env
 pnpm run dev
 ```
 
-To run docs locally:
+Run docs locally:
 
 ```bash
 pnpm docs:dev
